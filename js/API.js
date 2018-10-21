@@ -34,6 +34,23 @@ function validateData(data){
     }
 };
 
+function validateResultInstance(response){
+    var ret = {
+        error:true,
+        data:null
+    };
+    if (!response.status) {
+        throw "responseInvalid";
+    }
+    else {
+        if(response.status == 200) {
+            ret.error = false;
+            ret.data = response.data;
+        }
+    };
+    return ret;
+};
+
 var InventoryIT = {};
 InventoryIT.connectStatus = 0;
 InventoryIT.api = function(data, callback){
@@ -43,49 +60,18 @@ InventoryIT.api = function(data, callback){
     {
         params: {
           transform: 'true',
-          includes: data.includes
+          include: data.includes
         }
     }
     )
     .then(function (response) {
-        var r = {};
-        if(response.status == 200){ r.error = false; }
-        else{ r.error = true; }
-        r.data = response.data;
+        var r = validateResultInstance(response);
         return callback(r);
     })
     .catch(function (error) {
         console.log(error);
     });
 };
-
-
-
-InventoryIT.BETA = function(data, callback){
-    try { // instrucciones a probar
-        data = validateData(data); // La función puede arrojar una excepción
-      
-        instance.get('/' + data.page, 
-        {
-            params: {
-              transform: 'true',
-              includes: data.includes
-            }
-        }
-        )
-        .then(function (response) {
-            return callback(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-    }
-    catch (e) {
-      data = "unknown";
-      return callback(validateErrors(e));
-    }
-};
-
 /*
 InventoryIT.api({
     
@@ -95,6 +81,7 @@ InventoryIT.api({
     }else{
         console.log('Ocurrio un problema');
         console.log(r)
+        console.log(validateErrors(r))
     }
     
 });
@@ -109,6 +96,7 @@ InventoryIT.api({
     }else{
         console.log('Ocurrio un problema');
         console.log(r)
+        console.log(validateErrors(r))
     }
     
 });

@@ -1,7 +1,4 @@
 const reportBasic = Vue.component('reportBasic', {
-    data: {
-        categories: []
-    },
     methods: {
         loadLastReportBasic(){
             var self = this;
@@ -10,14 +7,25 @@ const reportBasic = Vue.component('reportBasic', {
                 includes: 'posts'
             }, function(r){
                 if(r.error == false){
-                    console.log(r)
-                    self.categories = r.data;
+                    console.log(r);
+                    
+                    var target = r.data.categories;
+                    for (var k in target){
+                        if (typeof target[k] !== 'function') {
+                            console.log(target[k]);
+                            self.$parent.lastReportBasic.push(target[k]);
+                        }
+                    }
                 }else{
                     console.log('Ocurrio un problema');
                     console.log(r)
+                    console.log(validateErrors(r))
                 }
             });
         }
+    },
+    created(){
+		var self = this;
     },
     mounted(){
 		var self = this;
@@ -27,9 +35,15 @@ const reportBasic = Vue.component('reportBasic', {
         <div>
             <div class="col-sm-12">
                 <h2>Reporte Básico</h2>
-                <table>
-                
-                </table>
+                <div class="col-sm-6" v-for="category in $parent.lastReportBasic">
+                    <h2>{{ category.name }}</h2>
+                    <table>
+                        <tr v-for="post in category.posts">
+                            <td>{{ post.id }}</td>
+                            <td>{{ post.content }}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 	`
@@ -68,6 +82,7 @@ var Principal = new Vue({
 	},
 	data: {
 		connect: false,
+		lastReportBasic: [],
 	},
 	created() {
 		var self = this;
