@@ -8,7 +8,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.2.1/vue-router.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.js"></script>
-  <script src="../lib/php_crud_api_transform.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css">
 <style>
@@ -137,7 +136,7 @@
 var posts = null;
 
 var api = axios.create({
-  baseURL: '../api.php'
+  baseURL: '/api.php/records'
 });
 
 function findpost (postId) {
@@ -160,7 +159,7 @@ var List = Vue.extend({
   created: function () {
     var self = this;
     api.get('/posts').then(function (response) {
-      posts = self.posts = php_crud_api_transform(response.data).posts;
+      posts = self.posts = response.data.records;
     }).catch(function (error) {
       console.log(error);
     });
