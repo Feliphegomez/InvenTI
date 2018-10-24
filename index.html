@@ -10,6 +10,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.js"></script>
 		<link href="dist/bootstrap/4.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
         <style>
         .logo {
           width: 50px;
@@ -42,9 +44,9 @@
             </form>  
             <ul class="navbar-nav mt-2 mt-md-0">
               <router-link tag="li" class="nav-item" v-bind:to="{path: '/add-post'}">
-              <a class="nav-link">
-                <span class="glyphicon glyphicon-plus"></span>
-                Add article
+              <a class="nav-link btn btn-success btn-sm">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+                Nuevo
               </a>
               </router-link>
             </ul>
@@ -86,35 +88,51 @@
   <div>
         <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-secondary">
             <form class="navbar-nav mr-auto form-inline">
-            </form>  
+				<label>Nuevo Articulo</label>
+            </form>
             <ul class="navbar-nav mt-2 mt-md-0">
-              <router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
-              <a class="nav-link">
-                <span class="glyphicon glyphicon-plus"></span>
-                Volver
-              </a>
-              </router-link>
+				<router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
+					<a class="nav-link btn btn-info btn-sm">
+						<span class="glyphicon glyphicon-hand-left"></span>
+						Regresar
+					</a>
+				</router-link>
             </ul>
         </nav>
-      <div class="container">
-        <h2>Add new article</h2>
-        <form v-on:submit="createpost">
-          <div class="form-group">
-            <label for="edit-content">Categoria: </label>
-            <select v-model="post.category_id">
-              <option v-for="option in options" v-bind:value="option.id">
-                {{ option.name }}
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="add-content">Content</label>
-            <textarea class="form-control" id="add-content" rows="10" v-model="post.content"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Create</button>
-          <router-link class="btn btn-default" v-bind:to="'/'">Cancel</router-link>
-        </form>
-      </div>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					<h4>Informacion basica: </h4>
+					<hr>
+					<form v-on:submit="createpost">
+						<div class="form-group">
+							<label for="edit-content">¿Donde Esta?: </label>
+							<select v-model="post.location_id" class="form-control" required="required">
+								<option v-for="option in optionsLocations" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">¿Donde Pertenece?: </label>
+							<select v-model="post.area_id" class="form-control" required="required">
+								<option v-for="option in optionsAreas" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Categoria: </label>
+							<select v-model="post.category_id" class="form-control" required="required">
+								<option v-for="option in optionsCategories" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="add-content">Descripcion</label>
+							<textarea class="form-control" id="add-content" rows="5" v-model="post.content" required="required"></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary">Crear</button>
+						<router-link class="btn btn-default" v-bind:to="'/'">Cancelar</router-link>
+					</form>
+				</div>
+			</div>
+		</div>
   </div>
 </template>
 
@@ -122,38 +140,64 @@
     <div>
         <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-secondary">
             <form class="navbar-nav mr-auto form-inline">
+				<label>Ver Articulo</label>
             </form>  
             <ul class="navbar-nav mt-2 mt-md-0">
-              <router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
-              <a class="nav-link">
-                <span class="glyphicon glyphicon-plus"></span>
-                Volver
-              </a>
-              </router-link>
+				<router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
+					<a class="nav-link btn btn-info btn-sm">
+						<span class="glyphicon glyphicon-hand-left"></span> <!-- glyphicon glyphicon-arrow-left -->
+						Regresar
+					</a>
+				</router-link>
             </ul>
         </nav>
-      <div class="container">
-        <div class="col-sm-12">
-            <h2>Categoria: {{ post.category_id.name }}</h2>
-            <hr>
-            <p>{{ post.content }}</p>
-            <table class="table">
-                <tr v-for="serial in post.article_serials">
-                    <td>{{ serial.name }}</td>
-                    <td>{{ serial.serial }}</td>
-                </tr>
-            </table>
-            <hr>
-            <h2>Revisiones: </h2>
-            <table class="table">
-                <tr v-for="comment in post.comments">
-                    <td>{{ comment.message }}</td>
-                </tr>
-            </table>
-            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
-            <router-link v-bind:to="'/'">Back to post list</router-link>
-        </div>
-      </div>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					<h4>Informacion basica: </h4>
+					<hr>
+					<div class="form-group">
+						<label for="edit-content">¿Donde Esta?: </label>
+						<select class="form-control" required="required" readonly="readonly">
+							<option>{{ post.location_id.name }}</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="edit-content">¿Donde Pertenece?: </label>
+						<select class="form-control" required="required" readonly="readonly">
+							<option>{{ post.area_id.name }}</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="edit-content">Categoria: </label>
+						<select class="form-control" required="required" readonly="readonly">
+							<option>{{ post.category_id.name }}</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label for="add-content">Descripcion</label>
+						<textarea class="form-control" rows="5" required="required" readonly="readonly">{{ post.content }}</textarea>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<h2>Componentes y Seriales: </h2>
+					<table class="table">
+						<tr v-for="serial in post.article_serials">
+							<td>{{ serial.name }}</td>
+							<td>{{ serial.serial }}</td>
+						</tr>
+					</table>
+					<hr>
+					<h2>Revisiones: </h2>
+					<table class="table">
+						<tr v-for="comment in post.comments">
+							<td>{{ comment.message }}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
     </div>
 </template>
 
@@ -163,48 +207,61 @@
             <form class="navbar-nav mr-auto form-inline">
             </form>  
             <ul class="navbar-nav mt-2 mt-md-0">
-              <router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
-              <a class="nav-link">
-                <span class="glyphicon glyphicon-plus"></span>
-                Volver
-              </a>
-              </router-link>
+				<router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
+					<a class="nav-link btn btn-info btn-sm">
+						<span class="glyphicon glyphicon-hand-left"></span>
+						Regresar
+					</a>
+				</router-link>
             </ul>
         </nav>
         <div class="container">
             <h2>Editar Articulo</h2>
-            <div class="row">
-                <div class="col-sm-6">
+			<div class="row">
+				<div class="col-sm-6">
+					<h4>Informacion basica: </h4>
+					<hr>
                     <form v-on:submit="updatepost">
-                      <div class="form-group">
-                        <label for="edit-content">Content: </label>
-                        <select v-model="selected">
-                          <option v-for="option in options" v-bind:value="option.id">
-                            {{ option.name }}
-                          </option>
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <label for="edit-content">Categoria: </label>
-                        <textarea class="form-control" id="edit-content" rows="3" v-model="post.content"></textarea>
-                      </div>
-                      <button type="submit" class="btn btn-primary">Guardar</button>
-                      <router-link class="btn btn-default" v-bind:to="'/'">Cancel</router-link>
+						<div class="form-group">
+							<label for="edit-content">¿Donde Esta?: </label>
+							<select v-model="selectedLocation" class="form-control" required="required">
+								<option v-for="option in optionsLocations" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">¿Donde Pertenece?: </label>
+							<select v-model="selectedArea" class="form-control" required="required">
+								<option v-for="option in optionsAreas" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Categoria: </label>
+							<select v-model="selectedCategory" class="form-control" required="required">
+								<option v-for="option in optionsCategories" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						
+						<div class="form-group">
+							<label for="add-content">Descripcion</label>
+							<textarea v-model="post.content" class="form-control" rows="5" required="required">{{ post.content }}</textarea>
+						</div>
+						<button type="submit" class="btn btn-primary">Guardar</button>
+						<router-link class="btn btn-default" v-bind:to="'/'">Cancel</router-link>
                     </form>
-                </div>
-                <div class="col-sm-6">
-                    <h4>Seriales: <a class="btn btn-success btn-xs"> + </a></h4>
-                    <table class="table">
-                        <tr v-for="serial in post.article_serials">
-                            <td>{{ serial.name }}</td>
-                            <td>{{ serial.serial }}</td>
-                            <td>
-                              <a class="btn btn-warning btn-xs">Edit</a>
-                              <a class="btn btn-danger btn-xs">Delete</a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+				</div>
+				<div class="col-sm-6">
+					<h4>Seriales: <a class="btn btn-success btn-xs"> + </a></h4>
+					<table class="table">
+						<tr v-for="serial in post.article_serials">
+							<td>{{ serial.name }}</td>
+							<td>{{ serial.serial }}</td>
+							<td>
+							  <a class="btn btn-warning btn-xs">Edit</a>
+							  <a class="btn btn-danger btn-xs">Delete</a>
+							</td>
+						</tr>
+					</table>
+				</div>
                 <div class="col-sm-12">
                     <h4>Revisiones: <a class="btn btn-success btn-xs"> + </a></h4>
                     <table class="table">
@@ -224,12 +281,12 @@
             <form class="navbar-nav mr-auto form-inline">
             </form>  
             <ul class="navbar-nav mt-2 mt-md-0">
-              <router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
-              <a class="nav-link">
-                <span class="glyphicon glyphicon-plus"></span>
-                Volver
-              </a>
-              </router-link>
+				<router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
+					<a class="nav-link btn btn-info btn-sm">
+						<span class="glyphicon glyphicon-hand-left"></span>
+						Regresar
+					</a>
+				</router-link>
             </ul>
         </nav>
       <div class="container">
@@ -243,8 +300,6 @@
   </div>
 </template>
 
-
-
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/popper.js/dist/umd/popper.min.js"></script>
 <script src="dist/bootstrap/4.1.3/dist/js/bootstrap.min.js"></script>
@@ -257,15 +312,18 @@ var api = axios.create({
 });
 
 function findpost (postId) {
-  return posts[findpostKey(postId)];
+	if(posts==null){ return { id: 0, category_id: 0, location_id: 0, area_id: 0, content: '' }; }
+	return posts[findpostKey(postId)];
 };
 
 function findpostKey (postId) {
-  for (var key = 0; key < posts.length; key++) {
-    if (posts[key].id == postId) {
-      return key;
-    }
-  }
+	if(posts==null){ return 0; }
+		
+	for (var key = 0; key < posts.length; key++) {
+		if (posts[key].id == postId) {
+			return key;
+		}
+	}
 };
 
 var List = Vue.extend({
@@ -279,7 +337,7 @@ var List = Vue.extend({
   mounted: function () {
     var self = this;
     
-    api.get('/articles?join=categories&join=comments&join=serials', {
+    api.get('/articles?join=categories&join=areas&join=locations&join=comments&join=serials', {
         params: {
             
         }
@@ -299,43 +357,65 @@ var List = Vue.extend({
 });
 
 var post = Vue.extend({
-  template: '#post',
-  data: function () {
-    return {post: findpost(this.$route.params.post_id)};
-  }
+	template: '#post',
+	data: function () {
+		return {post: findpost(this.$route.params.post_id)};
+	},
+    created(){
+        var self = this;
+		pot = findpost(this.$route.params.post_id);
+		
+		if(pot.id == undefined){ self.$parent.loadBasicList(); }
+		if(pot.id == 0){
+			router.push('/');
+		}
+    },
+    mounted(){
+        var self = this;
+    }
 });
 
 var postEdit = Vue.extend({
-  template: '#post-edit',
-  data: function () {
-    return {
-        post: findpost(this.$route.params.post_id),
-        selected: '',
-        options: this.$parent.categories
-    };
-  },
+	template: '#post-edit',
+	data: function () {
+		return {
+			post: findpost(this.$route.params.post_id),
+			selectedLocation: '',
+			selectedArea: '',
+			selectedCategory: '',
+			optionsLocations: this.$parent.locations,
+			optionsAreas: this.$parent.areas,
+			optionsCategories: this.$parent.categories,
+		};
+	},
     created(){
         var self = this;
-        
-        self.selected = self.post.category_id.id;
-        
+        self.selectedCategory = self.post.category_id.id;
+        self.selectedLocation = self.post.location_id.id;
+        self.selectedArea = self.post.area_id.id;
+		
+		if(self.post.id == 0){
+			router.push('/');
+		}
     },
-  methods: {
-    updatepost: function () {
-        var item = {
-            id: this.post.id,
-            category_id: this.selected,
-            content: this.post.content,
-        };
-        
-        api.put('/articles/'+item.id,item).then(function (response) {
-            console.log(response.data);
-        }).catch(function (error) {
-            console.log(error);
-        });
-        router.push('/');
-    }
-  }
+	methods: {
+		updatepost: function () {
+			var item = {
+				id: this.post.id,
+				category_id: this.selectedCategory,
+				location_id: this.selectedLocation,
+				area_id: this.selectedArea,
+				content: this.post.content,
+			};
+			
+			api.put('/articles/'+item.id,item).then(function (response) {
+				console.log(response.data);
+			}).catch(function (error) {
+				console.log(error);
+			});
+			router.push('/');
+		}
+	}
 });
 
 var postDelete = Vue.extend({
@@ -345,41 +425,55 @@ var postDelete = Vue.extend({
   },
   methods: {
     deletepost: function () {
-      var post = this.post;
-      api.delete('/articles/'+post.id).then(function (response) {
-        console.log(response.data);
-      }).catch(function (error) {
-        console.log(error);
-      });
-      router.push('/');
+		var post = this.post;
+		api.delete('/articles/'+post.id).then(function (response) {
+			console.log(response.data);
+			router.push('/');
+		}).catch(function (error) {
+			console.log(error);
+		});  
     }
   }
 });
 
 var Addpost = Vue.extend({
-  template: '#add-post',
-  data: function () {
-    return {
-        options: this.$parent.categories,
-        post: {
-            content: '', 
-            category_id: 0,
-        }
-    }
-  },
-  methods: {
-    createpost: function() {
-      var post = this.post;
-      api.post('/articles',post).then(function (response) {
-        console.log(response);
-        post.id = response.data;
-      }).catch(function (error) {
-        console.log(error);
-      });
-      router.push('/');
-    }
-  },
+	template: '#add-post',
+	data: function () {
+		return {
+			optionsLocations: this.$parent.locations,
+			optionsAreas: this.$parent.areas,
+			optionsCategories: this.$parent.categories,
+			post: {
+				content: '', 
+				category_id: 0,
+				area_id: 0,
+				location_id: 0,
+			}
+		}
+	},
+	methods: {
+		createpost: function() {
+			var post = this.post;
+			api.post('/articles',post).then(function (response) {
+				post.id = response.data;
+				console.log(post.id);
+				router.push('/')
+			}).catch(function (error) {
+				console.log(error);
+			});
+		}
+	},
     created(){
+        var self = this;
+		if(self.$parent.locations == null || self.$parent.areas == null || self.$parent.categories == null){ 
+			router.push('/');
+		}else{
+			self.optionsLocations = self.$parent.locations;
+			self.optionsAreas = self.$parent.areas;
+			self.optionsCategories = self.$parent.categories;
+		}
+    },
+    mounted(){
         var self = this;
     }
 });
@@ -396,6 +490,8 @@ app = new Vue({
     data: {
         posts: null,
         categories: null,
+        locations: null,
+        areas: null,
         searchKey: ''
     },
 	components: {
@@ -403,16 +499,35 @@ app = new Vue({
 	},
     router:router,
     methods: {
+		loadBasicList: function(){
+			var self = this;
+			api.get('/categories').then(function (response) {
+				self.categories = response.data.records;
+				console.log('Categorias Cargadas');
+			}).catch(function (error) {
+				console.log(error);
+			});
+			
+			api.get('/locations').then(function (response) {
+				self.locations = response.data.records;
+				console.log('Sedes Cargadas');
+			}).catch(function (error) {
+				console.log(error);
+			});
+			api.get('/areas').then(function (response) {
+				self.areas = response.data.records;
+				console.log('Areas Cargadas');
+			}).catch(function (error) {
+				console.log(error);
+			});
+		} 
     },
     created() {
+        var self = this;
     },
     mounted() {
         var self = this;
-        api.get('/categories').then(function (response) {
-            self.categories = response.data.records
-        }).catch(function (error) {
-            console.log(error);
-        });
+		self.loadBasicList();
     },
     template: `
     <main class="container_not">
