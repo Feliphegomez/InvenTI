@@ -171,25 +171,50 @@
               </router-link>
             </ul>
         </nav>
-      <div class="container">
-        <h2>Edit post</h2>
-        <form v-on:submit="updatepost">
-          <div class="form-group">
-            <label for="edit-content">Content: </label>
-            <select v-model="selected">
-              <option v-for="option in options" v-bind:value="option.id">
-                {{ option.name }}
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="edit-content">Categoria: </label>
-            <textarea class="form-control" id="edit-content" rows="3" v-model="post.content"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Save</button>
-          <router-link class="btn btn-default" v-bind:to="'/'">Cancel</router-link>
-        </form>
-      </div>
+        <div class="container">
+            <h2>Editar Articulo</h2>
+            <div class="row">
+                <div class="col-sm-6">
+                    <form v-on:submit="updatepost">
+                      <div class="form-group">
+                        <label for="edit-content">Content: </label>
+                        <select v-model="selected">
+                          <option v-for="option in options" v-bind:value="option.id">
+                            {{ option.name }}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="edit-content">Categoria: </label>
+                        <textarea class="form-control" id="edit-content" rows="3" v-model="post.content"></textarea>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Guardar</button>
+                      <router-link class="btn btn-default" v-bind:to="'/'">Cancel</router-link>
+                    </form>
+                </div>
+                <div class="col-sm-6">
+                    <h4>Seriales: <a class="btn btn-success btn-xs"> + </a></h4>
+                    <table class="table">
+                        <tr v-for="serial in post.article_serials">
+                            <td>{{ serial.name }}</td>
+                            <td>{{ serial.serial }}</td>
+                            <td>
+                              <a class="btn btn-warning btn-xs">Edit</a>
+                              <a class="btn btn-danger btn-xs">Delete</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-sm-12">
+                    <h4>Revisiones: <a class="btn btn-success btn-xs"> + </a></h4>
+                    <table class="table">
+                        <tr v-for="comment in post.comments">
+                            <td>{{ comment.message }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
   </div>
 </template>
 
@@ -228,7 +253,7 @@
 var posts = null;
 
 var api = axios.create({
-  baseURL: '/apps/inventi/api/api.php/records'
+  baseURL: '/mv/InvenTI/api/api.php/records'
 });
 
 function findpost (postId) {
