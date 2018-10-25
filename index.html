@@ -58,9 +58,13 @@
           <thead>
           <tr>
             <th>ID</th>
-            <th width="20%">Categoria</th>
-            <th width="60%">Content</th>
-            <th class="col-sm-2">Actions</th>
+            <th>Categoria</th>
+            <th>Localizacion</th>
+            <th>Area</th>
+            <th width="40%">Descripcion</th>
+            <th></th>
+            <th></th>
+            <th></th>
           </tr>
           </thead>
           <tbody>
@@ -70,12 +74,25 @@
           <tr v-else v-for="post in filteredposts">
             <td>{{ post.id }}</td>
             <td>{{ post.category_id.name }}</td>
+            <td>{{ post.location_id.name }}</td>
+            <td>{{ post.area_id.name }}</td>
             <td>
               <router-link v-bind:to="{name: 'post', params: {post_id: post.id}}">{{ post.content }}</router-link>
             </td>
             <td>
-              <router-link class="btn btn-warning btn-xs" v-bind:to="{name: 'post-edit', params: {post_id: post.id}}">Edit</router-link>
-              <router-link class="btn btn-danger btn-xs" v-bind:to="{name: 'post-delete', params: {post_id: post.id}}">Delete</router-link>
+                <router-link class="btn btn-default btn-xs" v-bind:to="{name: 'post-edit', params: {post_id: post.id}}">
+                    <span class="glyphicon glyphicon-pencil"></span> Modificar
+                </router-link>
+            </td>
+            <td>
+                <router-link class="btn btn-info btn-xs" v-bind:to="{name: 'post-edit', params: {post_id: post.id}}">
+                    <span class="glyphicon glyphicon-barcode"></span> Barcode
+                </router-link>
+            </td>
+            <td>
+                <router-link class="btn btn-danger btn-xs" v-bind:to="{name: 'post-delete', params: {post_id: post.id}}">
+                    <span class="glyphicon glyphicon-trash"></span> Eliminar
+                </router-link>
             </td>
           </tr>
           </tbody>
@@ -243,27 +260,63 @@
 						
 						<div class="form-group">
 							<label for="add-content">Descripcion</label>
-							<textarea v-model="post.content" class="form-control" rows="5" required="required">{{ post.content }}</textarea>
+							<textarea class="form-control" rows="5" required="required" v-model="post.content"></textarea>
 						</div>
-						<button type="submit" class="btn btn-primary">Guardar</button>
-						<router-link class="btn btn-default" v-bind:to="'/'">Cancel</router-link>
+						<div class="form-group">
+                            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
+                            <router-link class="btn btn-default" v-bind:to="'/'"><span class="glyphicon glyphicon-remove"></span> Cancel</router-link>
+						</div>
                     </form>
 				</div>
 				<div class="col-sm-6">
-					<h4>Seriales: <a class="btn btn-success btn-xs"> + </a></h4>
+					<h4>Seriales: <a class="btn btn-default btn-xs" @click="showSerial"> <span class="glyphicon glyphicon-plus"></span> </a> <a @click="hideSerial" class="btn btn-default btn-xs"> <span class="glyphicon glyphicon-minus"></span> </a> </h4>
+                    <hr>
+                    <div class="row" id="serialNew-pop" style="display:none;">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>ID: </label>
+                                    <input type="number" v-model="post.article_id" class="form-control" required="required" readonly="readonly" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Nombre: </label>
+                                    <input type="text" v-model="serialNew.name" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Total: </label>
+                                    <input type="number" v-model="serialNew.total" class="form-control" required="required" step="1" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Identificador (S/N): </label>
+                                    <input type="text" v-model="serialNew.serial" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Notas: </label>
+                                    <textarea class="form-control" rows="3" v-model="serialNew.notes" required="required"></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" @click="createSerial">Crear</button>
+                    </div>
 					<table class="table">
 						<tr v-for="serial in post.article_serials">
 							<td>{{ serial.name }}</td>
 							<td>{{ serial.serial }}</td>
 							<td>
-							  <a class="btn btn-warning btn-xs">Edit</a>
+							  <a class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 							  <a class="btn btn-danger btn-xs">Delete</a>
 							</td>
 						</tr>
 					</table>
 				</div>
                 <div class="col-sm-12">
-                    <h4>Revisiones: <a class="btn btn-success btn-xs"> + </a></h4>
+                    <h4>Revisiones: <a class="btn btn-default btn-xs"> <span class="glyphicon glyphicon-plus"></span> </a> </h4>
                     <table class="table">
                         <tr v-for="comment in post.comments">
                             <td>{{ comment.message }}</td>
@@ -386,6 +439,13 @@ var postEdit = Vue.extend({
 			optionsLocations: this.$parent.locations,
 			optionsAreas: this.$parent.areas,
 			optionsCategories: this.$parent.categories,
+            serialNew: {
+                article_id: this.$route.params.post_id,
+                name: '',
+                total: 0,
+                serial: '',
+                notes: ''
+            }
 		};
 	},
     created(){
@@ -399,6 +459,22 @@ var postEdit = Vue.extend({
 		}
     },
 	methods: {
+		createSerial: function() {
+			var serial = this.post;
+			api.post('/serials',serial).then(function (response) {
+				serial.id = response.data;
+				console.log();
+                    
+                api.get('/serials',serial).then(function (response) {
+                    self.post.article_serials.push(response.data);
+                    console.log('article_serials Cargadas');
+                }).catch(function (error) {
+                    console.log(error);
+                });
+			}).catch(function (error) {
+				console.log(error);
+			});
+		},
 		updatepost: function () {
 			var item = {
 				id: this.post.id,
@@ -414,7 +490,13 @@ var postEdit = Vue.extend({
 				console.log(error);
 			});
 			router.push('/');
-		}
+		},
+        hideSerial(){
+            jQuery("#serialNew-pop").css('display', 'none');
+        },
+        showSerial(){
+            jQuery("#serialNew-pop").css('display', 'block');
+        }
 	}
 });
 
