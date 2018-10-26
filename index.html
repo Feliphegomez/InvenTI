@@ -61,7 +61,6 @@
             <th>Categoria</th>
             <th>Localizacion</th>
             <th>Area</th>
-            <th width="40%">Descripcion</th>
             <th></th>
             <th></th>
             <th></th>
@@ -72,13 +71,10 @@
             <td colspan="4">Cargando...</td>
           </tr>
           <tr v-else v-for="post in filteredposts">
-            <td>{{ post.id }}</td>
+            <td><router-link v-bind:to="{name: 'post', params: {post_id: post.id}}">{{ post.id }}</router-link></td>
             <td>{{ post.category_id.name }}</td>
             <td>{{ post.location_id.name }}</td>
             <td>{{ post.area_id.name }}</td>
-            <td>
-              <router-link v-bind:to="{name: 'post', params: {post_id: post.id}}">{{ post.content }}</router-link>
-            </td>
             <td>
                 <router-link class="btn btn-default btn-xs" v-bind:to="{name: 'post-edit', params: {post_id: post.id}}">
                     <span class="glyphicon glyphicon-pencil"></span> Modificar
@@ -200,7 +196,7 @@
 				<div class="col-sm-6">
 					<h2>Componentes y Seriales: </h2>
 					<table class="table">
-						<tr v-for="serial in post.article_serials">
+						<tr v-for="serial in post.serials">
 							<td>{{ serial.name }}</td>
 							<td>{{ serial.serial }}</td>
 						</tr>
@@ -272,47 +268,75 @@
 					<h4>Seriales: <a class="btn btn-default btn-xs" @click="showSerial"> <span class="glyphicon glyphicon-plus"></span> </a> <a @click="hideSerial" class="btn btn-default btn-xs"> <span class="glyphicon glyphicon-minus"></span> </a> </h4>
                     <hr>
                     <div class="row" id="serialNew-pop" style="display:none;">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>ID: </label>
-                                    <input type="number" v-model="post.article_id" class="form-control" required="required" readonly="readonly" />
-                                </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Nombre: </label>
+                                <input type="text" v-model="serialNew.name" class="form-control" required="required" />
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Nombre: </label>
-                                    <input type="text" v-model="serialNew.name" class="form-control" required="required" />
-                                </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Total: </label>
+                                <input type="number" v-model="serialNew.total" class="form-control" required="required" step="1" />
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Total: </label>
-                                    <input type="number" v-model="serialNew.total" class="form-control" required="required" step="1" />
-                                </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Identificador (S/N): </label>
+                                <input type="text" v-model="serialNew.serial" class="form-control" required="required" />
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Identificador (S/N): </label>
-                                    <input type="text" v-model="serialNew.serial" class="form-control" required="required" />
-                                </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Notas: </label>
+                                <textarea class="form-control" rows="3" v-model="serialNew.notes" required="required"></textarea>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Notas: </label>
-                                    <textarea class="form-control" rows="3" v-model="serialNew.notes" required="required"></textarea>
-                                </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" @click="createSerial">Crear</button>
+                    </div>
+                    <div class="row" id="serialEdit-pop" style="display:none;">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>ID: </label>
+                                <input type="text" v-model="serialEdit.id" class="form-control" required="required" readonly="readonly" />
                             </div>
-                            <button type="submit" class="btn btn-primary" @click="createSerial">Crear</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Nombre: </label>
+                                <input type="text" v-model="serialEdit.name" class="form-control" required="required" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Total: </label>
+                                <input type="number" v-model="serialEdit.total" class="form-control" required="required" step="1" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Identificador (S/N): </label>
+                                <input type="text" v-model="serialEdit.serial" class="form-control" required="required" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Notas: </label>
+                                <textarea class="form-control" rows="3" v-model="serialEdit.notes" required="required"></textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" @click="changeSerial">Modificar</button>
+                        <button class="btn btn-default" @click="hideSerialEdit">Cancelar</button>
                     </div>
 					<table class="table">
-						<tr v-for="serial in post.article_serials">
-							<td>{{ serial.name }}</td>
-							<td>{{ serial.serial }}</td>
-							<td>
-							  <a class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-							  <a class="btn btn-danger btn-xs">Delete</a>
-							</td>
-						</tr>
+                            <tr v-for="serial in post.serials">
+                                <td><a class="btn btn-danger btn-xs" @click="removeSerial(serial.id)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                <td>{{ serial.name }}</td>
+                                <td>{{ serial.serial }}</td>
+                                <td>{{ serial.total }}</td>
+                                <td>{{ serial.notes }}</td>
+                                <td><a class="btn btn-warning btn-xs" @click="editSerial(serial.id)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                            </tr>
 					</table>
 				</div>
                 <div class="col-sm-12">
@@ -440,7 +464,13 @@ var postEdit = Vue.extend({
 			optionsAreas: this.$parent.areas,
 			optionsCategories: this.$parent.categories,
             serialNew: {
-                article_id: this.$route.params.post_id,
+                name: '',
+                total: 0,
+                serial: '',
+                notes: ''
+            },
+            serialEdit: {
+                id: 0,
                 name: '',
                 total: 0,
                 serial: '',
@@ -459,15 +489,69 @@ var postEdit = Vue.extend({
 		}
     },
 	methods: {
+        editSerial: function(idSerial){
+            var self = this;
+            
+            api.get('/serials/' + idSerial).then(function (response) {
+                self.showSerialEdit();
+                self.serialEdit = response.data
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        changeSerial: function(){
+            var self = this;
+			
+			api.put('/serials/' + self.serialEdit.id, self.serialEdit).then(function (response) {
+				console.log(response.data);
+                router.push('/post/' + self.post.id);
+                router.push('/');
+                self.hideSerialEdit();
+			}).catch(function (error) {
+				console.log(error);
+			});
+        },
+        removeSerial: function(idSerial){
+            var self = this;
+            
+            api.delete('/serials/' + idSerial).then(function (response) {
+                router.push('/');
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        clearSerials: function(){
+			var self = this;
+            self.serialNew = {
+                name: '',
+                total: 0,
+                serial: '',
+                notes: ''
+            };
+        },
 		createSerial: function() {
-			var serial = this.post;
+			var self = this;
+            
+            var serial = {
+                article_id: self.post.id,
+                name: self.serialNew.name,
+                total: self.serialNew.total,
+                serial: self.serialNew.serial,
+                notes: self.serialNew.notes
+            };
+            
 			api.post('/serials',serial).then(function (response) {
-				serial.id = response.data;
-				console.log();
-                    
-                api.get('/serials',serial).then(function (response) {
-                    self.post.article_serials.push(response.data);
-                    console.log('article_serials Cargadas');
+				serialId = response.data;
+				console.log(response.data);
+                
+                console.log(serialId);
+                
+                api.get('/serials/' + serialId).then(function (response) {
+                    //self.post.serials.push(response.data);
+                    self.post.serials.push(response.data);
+                    console.log('serials Cargadas');
+                    self.clearSerials();
+                    self.hideSerial();
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -496,6 +580,12 @@ var postEdit = Vue.extend({
         },
         showSerial(){
             jQuery("#serialNew-pop").css('display', 'block');
+        },
+        hideSerialEdit(){
+            jQuery("#serialEdit-pop").css('display', 'none');
+        },
+        showSerialEdit(){
+            jQuery("#serialEdit-pop").css('display', 'block');
         }
 	}
 });
