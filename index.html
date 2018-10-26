@@ -61,6 +61,7 @@
             <th>Categoria</th>
             <th>Localizacion</th>
             <th>Area</th>
+            <th>Descripcion</th>
             <th></th>
             <th></th>
             <th></th>
@@ -75,6 +76,7 @@
             <td>{{ post.category_id.name }}</td>
             <td>{{ post.location_id.name }}</td>
             <td>{{ post.area_id.name }}</td>
+            <td>{{ post.content }}</td>
             <td>
                 <router-link class="btn btn-default btn-xs" v-bind:to="{name: 'post-edit', params: {post_id: post.id}}">
                     <span class="glyphicon glyphicon-pencil"></span> Modificar
@@ -137,6 +139,12 @@
 							</select>
 						</div>
 						<div class="form-group">
+							<label for="edit-content">Asignado a: </label>
+							<select v-model="post.people_id" class="form-control" required="required">
+								<option v-for="option in optionsPeople" v-bind:value="option.value">{{ option.text }}</option>
+							</select>
+						</div>
+						<div class="form-group">
 							<label for="add-content">Descripcion</label>
 							<textarea class="form-control" id="add-content" rows="5" v-model="post.content" required="required"></textarea>
 						</div>
@@ -165,33 +173,37 @@
             </ul>
         </nav>
 		<div class="container">
+			<h2>Informacion basica: </h2>
+				<hr>
 			<div class="row">
 				<div class="col-sm-6">
-					<h4>Informacion basica: </h4>
-					<hr>
-					<div class="form-group">
-						<label for="edit-content">¿Donde Esta?: </label>
-						<select class="form-control" required="required" readonly="readonly">
-							<option>{{ post.location_id.name }}</option>
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="edit-content">¿Donde Pertenece?: </label>
-						<select class="form-control" required="required" readonly="readonly">
-							<option>{{ post.area_id.name }}</option>
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="edit-content">Categoria: </label>
-						<select class="form-control" required="required" readonly="readonly">
-							<option>{{ post.category_id.name }}</option>
-						</select>
-					</div>
-					
-					<div class="form-group">
-						<label for="add-content">Descripcion</label>
-						<textarea class="form-control" rows="5" required="required" readonly="readonly">{{ post.content }}</textarea>
-					</div>
+					<table class="table table-responsive">
+						<tr>
+							<th>¿Donde Esta?: </th>
+							<td>{{ post.location_id.name }}</td>
+						</tr>
+						<tr>
+							<th>¿Donde Pertenece?: </th>
+							<td>{{ post.area_id.name }}</td>
+						</tr>
+						<tr>
+							<th>Categoria: </th>
+							<td>{{ post.category_id.name }}</td>
+						</tr>
+						<tr>
+							<th>Asignado a: </th>
+							<td>
+								{{ post.people_id.id }}
+								<hr>{{ post.people_id.nombre }}
+								<hr>{{ post.people_id.cedula }}
+								<hr>{{ post.people_id.user }}
+							</td>
+						</tr>
+						<tr>
+							<th>Descripcion: </th>
+							<td>{{ post.content }}</td>
+						</tr>
+					</table>
 				</div>
 				<div class="col-sm-6">
 					<h2>Componentes y Seriales: </h2>
@@ -261,6 +273,12 @@
 							<label for="edit-content">Categoria: </label>
 							<select v-model="selectedCategory" class="form-control" required="required">
 								<option v-for="option in optionsCategories" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Asignado a: </label>
+							<select v-model="selectedPeople" class="form-control" required="required">
+								<option v-for="option in optionsPeople" v-bind:value="option.value">{{ option.text }}</option>
 							</select>
 						</div>
 						
@@ -408,8 +426,12 @@ var api = axios.create({
   baseURL: location.pathname + 'api/api.php/records'
 });
 
+var Forma2 = axios.create({
+  baseURL: location.pathname + '../forma2/api/v1.0/'
+});
+
 function findpost (postId) {
-	if(posts==null){ return { id: 0, category_id: 0, location_id: 0, area_id: 0, content: '' }; }
+	if(posts==null){ return { id: 0, category_id: 0, location_id: 0, area_id: 0, content: '', people_id: 0 }; }
 	return posts[findpostKey(postId)];
 };
 
@@ -456,15 +478,32 @@ var List = Vue.extend({
 var post = Vue.extend({
 	template: '#post',
 	data: function () {
-		return {post: findpost(this.$route.params.post_id)};
+		return {
+			post: findpost(this.$route.params.post_id)
+		};
 	},
     created(){
         var self = this;
-		pot = findpost(this.$route.params.post_id);
+		post = findpost(this.$route.params.post_id);
 		
-		if(pot.id == undefined){ self.$parent.loadBasicList(); }
-		if(pot.id == 0){
+		if(post.id == undefined){
+			self.$parent.loadBasicList();
+		}
+		if(post.id == 0){
 			router.push('/');
+		}
+		else{
+			Forma2.get('/people.php?action=option_list_revert&idPeople=' + post.people_id).then(function (response) {
+			console.log(response.data)
+				if(!response.data.data){
+				
+				}
+				else{
+					self.post.people_id = response.data.data;
+				}
+			}).catch(function (error) {
+				console.log(error);
+			});
 		}
     },
     mounted(){
@@ -480,9 +519,11 @@ var postEdit = Vue.extend({
 			selectedLocation: '',
 			selectedArea: '',
 			selectedCategory: '',
+			selectedPeople: '',
 			optionsLocations: this.$parent.locations,
 			optionsAreas: this.$parent.areas,
 			optionsCategories: this.$parent.categories,
+			optionsPeople: [],
             serialNew: {
                 name: '',
                 total: 0,
@@ -507,10 +548,23 @@ var postEdit = Vue.extend({
         self.selectedCategory = self.post.category_id.id;
         self.selectedLocation = self.post.location_id.id;
         self.selectedArea = self.post.area_id.id;
+        self.selectedPeople = self.post.people_id;
 		
 		if(self.post.id == 0){
 			router.push('/');
 		}
+		
+		Forma2.get('/people.php?action=option_list').then(function (response) {
+			if(!response.data.data){
+			}
+			else{
+				self.optionsPeople = response.data.data;
+				console.log(self.optionsPeople);
+			}
+		}).catch(function (error) {
+			console.log(error);
+		});
+		
     },
 	methods: {
         editSerial: function(idSerial){
@@ -589,6 +643,7 @@ var postEdit = Vue.extend({
 				category_id: this.selectedCategory,
 				location_id: this.selectedLocation,
 				area_id: this.selectedArea,
+				people_id: this.selectedPeople,
 				content: this.post.content,
 			};
 			
@@ -661,11 +716,13 @@ var Addpost = Vue.extend({
 			optionsLocations: this.$parent.locations,
 			optionsAreas: this.$parent.areas,
 			optionsCategories: this.$parent.categories,
+			optionsPeople: [],
 			post: {
 				content: '', 
 				category_id: 0,
 				area_id: 0,
 				location_id: 0,
+				people_id: 0,
 			}
 		}
 	},
@@ -689,6 +746,17 @@ var Addpost = Vue.extend({
 			self.optionsLocations = self.$parent.locations;
 			self.optionsAreas = self.$parent.areas;
 			self.optionsCategories = self.$parent.categories;
+			
+			Forma2.get('/people.php?action=option_list').then(function (response) {
+				if(!response.data.data){
+				}
+				else{
+					self.optionsPeople = response.data.data;
+					console.log(self.optionsPeople);
+				}
+			}).catch(function (error) {
+				console.log(error);
+			});
 		}
     },
     mounted(){
