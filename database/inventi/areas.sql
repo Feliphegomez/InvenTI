@@ -11,13 +11,13 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- Volcando estructura para tabla inventi.countries
-CREATE TABLE IF NOT EXISTS `countries` (
+-- Volcando estructura para tabla inventi.areas
+CREATE TABLE IF NOT EXISTS `areas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `shape` polygon NOT NULL,
+  `icon` blob,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- La exportación de datos fue deseleccionada.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

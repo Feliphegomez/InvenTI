@@ -54,7 +54,7 @@
       <div class="container">
         <div class="actions">
         </div>
-        <table class="table">
+        <table class="table table-response">
           <thead>
           <tr>
             <th>ID</th>
@@ -81,7 +81,7 @@
                 </router-link>
             </td>
             <td>
-                <router-link class="btn btn-info btn-xs" v-bind:to="{name: 'post-edit', params: {post_id: post.id}}">
+                <router-link class="btn btn-info btn-xs" v-bind:to="{name: 'post', params: {post_id: post.id}}">
                     <span class="glyphicon glyphicon-barcode"></span> Barcode
                 </router-link>
             </td>
@@ -195,17 +195,22 @@
 				</div>
 				<div class="col-sm-6">
 					<h2>Componentes y Seriales: </h2>
-					<table class="table">
+					<table class="table table-response">
 						<tr v-for="serial in post.serials">
 							<td>{{ serial.name }}</td>
 							<td>{{ serial.serial }}</td>
+							<td>{{ serial.total }}</td>
+							<td>{{ serial.notes }}</td>
+							<td>{{ serial.create }}</td>
+							<td>{{ serial.change }}</td>
 						</tr>
 					</table>
 					<hr>
 					<h2>Revisiones: </h2>
-					<table class="table">
+					<table class="table table-response">
 						<tr v-for="comment in post.comments">
 							<td>{{ comment.message }}</td>
+							<td>{{ comment.create }}</td>
 						</tr>
 					</table>
 				</div>
@@ -232,7 +237,12 @@
             <h2>Editar Articulo</h2>
 			<div class="row">
 				<div class="col-sm-6">
-					<h4>Informacion basica: </h4>
+					<h4>Informacion Básica: </h4>
+                    <p>
+                        <b>Fecha de creación: </b> {{ post.create }}
+                        <br>
+                        <b>Fecha de última modificacion: </b> {{ post.change }}
+                    </p>
 					<hr>
                     <form v-on:submit="updatepost">
 						<div class="form-group">
@@ -328,7 +338,7 @@
                         <button class="btn btn-primary" @click="changeSerial">Modificar</button>
                         <button class="btn btn-default" @click="hideSerialEdit">Cancelar</button>
                     </div>
-					<table class="table">
+					<table class="table table-response">
                             <tr v-for="serial in post.serials">
                                 <td><a class="btn btn-danger btn-xs" @click="removeSerial(serial.id)"><span class="glyphicon glyphicon-trash"></span></a></td>
                                 <td>{{ serial.name }}</td>
@@ -340,10 +350,20 @@
 					</table>
 				</div>
                 <div class="col-sm-12">
-                    <h4>Revisiones: <a class="btn btn-default btn-xs"> <span class="glyphicon glyphicon-plus"></span> </a> </h4>
-                    <table class="table">
+                    <h4>Revisiones: <a class="btn btn-default btn-xs" @click="showComment"> <span class="glyphicon glyphicon-plus"></span> </a> </h4>
+                    <div class="row" id="commentNew-pop" style="display:none;">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Observaciones: </label>
+                                <textarea class="form-control" rows="3" v-model="commentNew.message" required="required"></textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" @click="createComment">Crear</button>
+                    </div>
+                    <table class="table table-response">
                         <tr v-for="comment in post.comments">
                             <td>{{ comment.message }}</td>
+                            <td>{{ comment.create }}</td>
                         </tr>
                     </table>
                 </div>
@@ -475,6 +495,10 @@ var postEdit = Vue.extend({
                 total: 0,
                 serial: '',
                 notes: ''
+            },
+            commentNew: {
+                article_id: 0,
+                message: ''
             }
 		};
 	},
@@ -575,6 +599,22 @@ var postEdit = Vue.extend({
 			});
 			router.push('/');
 		},
+        createComment: function(){
+			var self = this;
+            self.commentNew.article_id = self.post.id;
+			api.post('/comments', self.commentNew).then(function (response) {
+            
+                api.get('/comments/' + response.data).then(function (response) {
+                    self.post.comments.push(response.data);
+                    self.hideComment();
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            
+			}).catch(function (error) {
+				console.log(error);
+			});
+        },
         hideSerial(){
             jQuery("#serialNew-pop").css('display', 'none');
         },
@@ -586,6 +626,12 @@ var postEdit = Vue.extend({
         },
         showSerialEdit(){
             jQuery("#serialEdit-pop").css('display', 'block');
+        },
+        hideComment(){
+            jQuery("#commentNew-pop").css('display', 'none');
+        },
+        showComment(){
+            jQuery("#commentNew-pop").css('display', 'block');
         }
 	}
 });

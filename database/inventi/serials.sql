@@ -12,23 +12,21 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 -- Volcando estructura para tabla inventi.serials
-DROP TABLE IF EXISTS `serials`;
 CREATE TABLE IF NOT EXISTS `serials` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `article_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `total` int(11) NOT NULL,
   `serial` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+  `notes` text NOT NULL,
+  `create` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `change` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `FK_serials_articles` (`article_id`),
+  CONSTRAINT `FK_serials_articles` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla inventi.serials: ~2 rows (aproximadamente)
-DELETE FROM `serials`;
-/*!40000 ALTER TABLE `serials` DISABLE KEYS */;
-INSERT INTO `serials` (`id`, `name`, `total`, `serial`) VALUES
-	(1, 'Placa base', 1, 'adadad-adadad'),
-	(2, 'mouse', 1, 'ggs6dg56dg-sdg6+1d56g1-sdg1d6');
-/*!40000 ALTER TABLE `serials` ENABLE KEYS */;
-
+-- La exportación de datos fue deseleccionada.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

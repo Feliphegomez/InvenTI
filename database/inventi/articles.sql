@@ -12,25 +12,24 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 -- Volcando estructura para tabla inventi.articles
-DROP TABLE IF EXISTS `articles`;
 CREATE TABLE IF NOT EXISTS `articles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `category_id` int(11) NOT NULL,
+  `area_id` int(11) NOT NULL,
+  `location_id` int(11) NOT NULL,
   `content` varchar(255) NOT NULL,
+  `create` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `change` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `category_id` (`category_id`),
-  CONSTRAINT `articles_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+  KEY `area_id` (`area_id`),
+  KEY `location_id` (`location_id`),
+  CONSTRAINT `FK_articles_areas` FOREIGN KEY (`area_id`) REFERENCES `areas` (`id`),
+  CONSTRAINT `FK_articles_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
+  CONSTRAINT `FK_articles_locations` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla inventi.articles: ~3 rows (aproximadamente)
-DELETE FROM `articles`;
-/*!40000 ALTER TABLE `articles` DISABLE KEYS */;
-INSERT INTO `articles` (`id`, `category_id`, `content`) VALUES
-	(1, 1, 'Lapton 1la'),
-	(2, 1, 'Pc 1 Nuevo'),
-	(8, 2, 'New');
-/*!40000 ALTER TABLE `articles` ENABLE KEYS */;
-
+-- La exportación de datos fue deseleccionada.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

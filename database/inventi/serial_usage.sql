@@ -12,7 +12,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 -- Volcando estructura para vista inventi.serial_usage
-DROP VIEW IF EXISTS `serial_usage`;
 -- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `serial_usage`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `serial_usage` AS select `name`, count(`name`) AS `count`, `total`, `serial` from `serials`, `article_serials` where `serials`.`id` = `article_serials`.`serial_id` group by `name` order by `count` desc, `name` ;

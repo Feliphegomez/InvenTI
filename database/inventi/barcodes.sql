@@ -12,7 +12,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 -- Volcando estructura para tabla inventi.barcodes
-DROP TABLE IF EXISTS `barcodes`;
 CREATE TABLE IF NOT EXISTS `barcodes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `article_id` int(11) NOT NULL,
@@ -21,15 +20,9 @@ CREATE TABLE IF NOT EXISTS `barcodes` (
   PRIMARY KEY (`id`),
   KEY `FK_barcodes_articles` (`article_id`),
   CONSTRAINT `FK_barcodes_articles` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla inventi.barcodes: ~1 rows (aproximadamente)
-DELETE FROM `barcodes`;
-/*!40000 ALTER TABLE `barcodes` DISABLE KEYS */;
-INSERT INTO `barcodes` (`id`, `article_id`, `hex`, `bin`) VALUES
-	(1, 1, '00ff01', '\0�');
-/*!40000 ALTER TABLE `barcodes` ENABLE KEYS */;
-
+-- La exportación de datos fue deseleccionada.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
