@@ -41,20 +41,20 @@
                     <li v-if="userSession.active == false"><router-link tag="a" v-bind:to="{path: '/LogIn'}">Ingresar</router-link></li>
                     <li class="dropdown " v-if="userSession.active == true">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                            Mi Cuenta
-                            <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li class="dropdown-header">SETTINGS</li>
-                                <li class=""><a href="#">Other Link</a></li>
-                                <li class=""><a href="#">Other Link</a></li>
-                                <li class=""><a href="#">Other Link</a></li>
-                                <li class="divider"></li>
-                                <li><a @click="logOut">Logout</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
+                        Mi Cuenta
+                        <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="dropdown-header">SETTINGS</li>
+                            <li class=""><a href="#">Other Link</a></li>
+                            <li class=""><a href="#">Other Link</a></li>
+                            <li class=""><a href="#">Other Link</a></li>
+                            <li class="divider"></li>
+                            <li><a @click="logOut">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
     </nav>
     <div class="container-fluid main-container">
         <div class="col-md-2 sidebar">
@@ -65,7 +65,7 @@
                             <div class="side-menu-container">
                                 <ul class="nav navbar-nav">
                                     <li class="active"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
-                                    <li class="panel panel-default" id="dropdown-1">
+                                    <li id="dropdown-1">
                                         <a data-toggle="collapse" href="#dropdown-1-lvl1">
                                             <span class="glyphicon glyphicon-user"></span> Inventario <span class="caret"></span>
                                         </a>
@@ -79,8 +79,8 @@
                                                             Listar Todo
                                                         </router-link>
                                                     </li>
-                                                    <router-link tag="li" v-bind:to="{path: '/articles/add'}">
-                                                    <a class="nav-link btn btn-success btn-sm">
+                                                    <router-link tag="li" v-bind:to="{name: 'articlesAdd', params: {} }">
+                                                    <a >
                                                         <span class="glyphicon glyphicon-plus-sign"></span>
                                                         Nuevo Articulo
                                                     </a>
@@ -104,6 +104,58 @@
                                                             </div>
                                                         </div>
                                                     </li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li id="dropdown-2">
+                                        <a data-toggle="collapse" href="#dropdown-2-lvl1">
+                                            <span class="glyphicon glyphicon-user"></span> Opciones <span class="caret"></span>
+                                        </a>
+
+                                        <div id="dropdown-2-lvl1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <ul class="nav navbar-nav">
+                                                    
+                                                    <!--<li><a href="#">Categorias</a></li>-->
+
+                                                    <li class="panel panel-default" id="dropdown-2">
+                                                        <a data-toggle="collapse" href="#dropdown-2-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Categorias <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-2-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="cat in categories"><a href="#">{{ cat.name }}</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="panel panel-default" id="dropdown-3">
+                                                        <a data-toggle="collapse" href="#dropdown-3-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Localiciones <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-3-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="loc in locations"><a href="#">{{ loc.name }}</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="panel panel-default" id="dropdown-4">
+                                                        <a data-toggle="collapse" href="#dropdown-4-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Areas <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-4-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="area in areas"><a href="#">{{ area.name }}</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+              
                                                 </ul>
                                             </div>
                                         </div>
@@ -217,7 +269,7 @@
     
     <template id="articles-list">
       <div>
-          <div class="container">
+          <div class="">
             <div class="actions">
             </div>
             <table class="table table-response">
@@ -254,10 +306,9 @@
                     </router-link>
                 </td>
                 <td>
-                    <!--
-                    <router-link class="btn btn-danger btn-xs" v-bind:to="{name: 'post-delete', params: {post_id: post.id}}">
+                    <router-link class="btn btn-danger btn-xs" v-bind:to="{name: 'articlesDelete', params: {article_id: post.id}}">
                         <span class="glyphicon glyphicon-trash"></span> Eliminar
-                    </router-link>-->
+                    </router-link>
                 </td>
               </tr>
               </tbody>
@@ -268,7 +319,7 @@
 
     <template id="articles-view">
         <div>
-            <div class="container">
+            <div class="">
                 <div class="row">
                     <div class="col-sm-6">
                         <h2>Informacion basica: </h2>
@@ -330,7 +381,7 @@
 
     <template id="articles-edit">
       <div>
-            <div class="container">
+            <div class="">
                 <h2>Editar Articulo</h2>
                 <div class="row">
                     <div class="col-sm-6">
@@ -477,7 +528,7 @@
 
     <template id="articles-delete">
       <div>
-          <div class="container">
+          <div class="">
             <h2>Delete article {{ post.id }}</h2>
             <form v-on:submit="deletepost">
               <p>The action cannot be undone.</p>
@@ -490,25 +541,12 @@
 
     <template id="articles-add">
       <div>
-            <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-secondary">
-                <form class="navbar-nav mr-auto form-inline">
-                    <label>Nuevo Articulo</label>
-                </form>
-                <ul class="navbar-nav mt-2 mt-md-0">
-                    <router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
-                        <a class="nav-link btn btn-info btn-sm">
-                            <span class="glyphicon glyphicon-hand-left"></span>
-                            Regresar
-                        </a>
-                    </router-link>
-                </ul>
-            </nav>
-            <div class="container">
+            <div class="">
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <h4>Informacion basica: </h4>
                         <hr>
-                        <form v-on:submit="createpost">
+                        <form ><!--v-on:submit="createpost"-->
                             <div class="form-group">
                                 <label for="edit-content">¿Donde Esta?: </label>
                                 <select v-model="post.location_id" class="form-control" required="required">

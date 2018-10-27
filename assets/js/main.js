@@ -112,12 +112,10 @@ var articlesAdd = Vue.extend({
 	},
     computed(){
         var self = this;
-		/*if(self.$parent.locations == null || self.$parent.areas == null || self.$parent.categories == null){ 
+        
+        if(self.$parent.locations == null || self.$parent.areas == null || self.$parent.categories == null){ 
 			router.push('/');
 		}else{
-		}*/
-        
-        
 			self.optionsLocations = self.$parent.locations;
 			self.optionsAreas = self.$parent.areas;
 			self.optionsCategories = self.$parent.categories;
@@ -132,20 +130,21 @@ var articlesAdd = Vue.extend({
 			}).catch(function (error) {
 				console.log(error);
 			});
+		}
     }
 });
 
 var articlesDelete = Vue.extend({
   template: '#articles-delete',
   data: function () {
-    return {post: findpost(this.$route.params.post_id)};
+    return {post: findpost(this.$route.params.article_id)};
   },
   methods: {
     deletepost: function () {
 		var post = this.post;
 		api.delete('/articles/'+post.id).then(function (response) {
 			console.log(response.data);
-			router.push('/');
+			router.push('/articles');
 		}).catch(function (error) {
 			console.log(error);
 		});  
@@ -157,7 +156,7 @@ var articlesEdit = Vue.extend({
 	template: '#articles-edit',
 	data: function () {
 		return {
-			post: findpost(this.$route.params.post_id),
+			post: findpost(this.$route.params.article_id),
 			selectedLocation: '',
 			selectedArea: '',
 			selectedCategory: '',
@@ -193,7 +192,7 @@ var articlesEdit = Vue.extend({
         self.selectedPeople = self.post.people_id;
 		
 		if(self.post.id == 0){
-			router.push('/');
+			router.push('/articles');
 		}
 		
 		Forma2.get('/people.php?action=option_list').then(function (response) {
@@ -225,7 +224,7 @@ var articlesEdit = Vue.extend({
 			api.put('/serials/' + self.serialEdit.id, self.serialEdit).then(function (response) {
 				console.log(response.data);
                 router.push('/post/' + self.post.id);
-                router.push('/');
+                router.push('/articles');
                 self.hideSerialEdit();
 			}).catch(function (error) {
 				console.log(error);
@@ -235,7 +234,7 @@ var articlesEdit = Vue.extend({
             var self = this;
             
             api.delete('/serials/' + idSerial).then(function (response) {
-                router.push('/');
+                router.push('/articles');
             }).catch(function (error) {
                 console.log(error);
             });
@@ -294,7 +293,7 @@ var articlesEdit = Vue.extend({
 			}).catch(function (error) {
 				console.log(error);
 			});
-			router.push('/');
+			router.push('/articles');
 		},
         createComment: function(){
 			var self = this;
@@ -337,18 +336,18 @@ var articlesView = Vue.extend({
 	template: '#articles-view',
 	data: function () {
 		return {
-			post: findpost(this.$route.params.post_id)
+			post: findpost(this.$route.params.article_id)
 		};
 	},
     created(){
         var self = this;
-		post = findpost(this.$route.params.post_id);
+		post = findpost(this.$route.params.article_id);
 		
 		if(post.id == undefined){
 			self.$parent.loadBasicList();
 		}
 		if(post.id == 0){
-			router.push('/');
+			router.push('/articles');
 		}
 		else{
 			Forma2.get('/people.php?action=option_list_revert&idPeople=' + post.people_id).then(function (response) {
@@ -468,9 +467,9 @@ var router = new VueRouter({routes:[
   { path: '/LogIn', component: LogIn },
   { path: '/articles', component: articlesList },
   { path: '/articles/:article_id', component: articlesView, name: 'articlesView' },
-  { path: '/articles/add', component: articlesAdd },
-  { path: '/articles/:article_id/edit', component: articlesEdit, name: 'articlesEdit'},
-  { path: '/articles/:article_id/delete', component: articlesDelete, name: 'articlesDelete'}
+  { path: '/articles/add', component: articlesAdd, name: 'articlesAdd' },
+  { path: '/articles/:article_id/edit', component: articlesEdit, name: 'articlesEdit' },
+  { path: '/articles/:article_id/delete', component: articlesDelete, name: 'articlesDelete' }
 ]});
 
 app = new Vue({
@@ -485,7 +484,12 @@ app = new Vue({
     },
 	components: {
         'Dashboard': Dashboard,
-        'LogIn': LogIn
+        'LogIn': LogIn,
+        'articlesList': articlesList,
+        'articlesView': articlesView,
+        'articlesAdd': articlesAdd,
+        'articlesEdit': articlesEdit,
+        'articlesDelete': articlesDelete,
 	},
     router:router,
     methods: {
