@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS `barcodes` (
   `article_id` int(11) NOT NULL,
   `hex` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `bin` varbinary(255) NOT NULL,
+  `create` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `change` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `FK_barcodes_articles` (`article_id`),
   CONSTRAINT `FK_barcodes_articles` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`)

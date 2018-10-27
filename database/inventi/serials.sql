@@ -14,17 +14,17 @@
 -- Volcando estructura para tabla inventi.serials
 CREATE TABLE IF NOT EXISTS `serials` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `article_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `article_id` int(11) NOT NULL,
   `total` int(11) NOT NULL,
   `serial` text NOT NULL,
-  `notes` text NOT NULL,
   `create` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `change` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `notes` varchar(1000) DEFAULT ' ',
   PRIMARY KEY (`id`),
   KEY `FK_serials_articles` (`article_id`),
   CONSTRAINT `FK_serials_articles` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

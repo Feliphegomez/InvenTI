@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `category_id` int(11) NOT NULL,
   `area_id` int(11) NOT NULL,
   `location_id` int(11) NOT NULL,
+  `people_id` varchar(250) DEFAULT '0',
   `content` varchar(255) NOT NULL,
   `create` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `change` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
