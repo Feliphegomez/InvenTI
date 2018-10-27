@@ -120,7 +120,8 @@ var articlesAdd = Vue.extend({
 			self.optionsAreas = self.$parent.areas;
 			self.optionsCategories = self.$parent.categories;
 			
-			Forma2.get('/people.php?action=option_list').then(function (response) {
+			api.get('/users.php').then(function (response) {
+                console.log(response);
 				if(!response.data.data){
 				}
 				else{
