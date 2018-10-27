@@ -1,0 +1,553 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>invenTI - Inventario TI - FelipheGomez</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.2.1/vue-router.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+		<link href="assets/css/style.css" rel="stylesheet">
+    </head>
+<body>
+<div id="app">
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle navbar-toggle-sidebar collapsed">
+                MENU
+                </button>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                
+                <router-link tag="a" class="navbar-brand" v-bind:to="{path: '/'}">AdminPanel</router-link>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">      
+                <form class="navbar-form navbar-left" method="GET" role="search">
+                    <div class="form-group" @submit="searchGlobal">
+                        <input type="text" name="q" class="form-control" placeholder="Search" v-model="searchText">
+                    </div>
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>{{ userSession.nombre }}</a></li>
+                    <li v-if="userSession.active == false"><router-link tag="a" v-bind:to="{path: '/LogIn'}">Ingresar</router-link></li>
+                    <li class="dropdown " v-if="userSession.active == true">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            Mi Cuenta
+                            <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li class="dropdown-header">SETTINGS</li>
+                                <li class=""><a href="#">Other Link</a></li>
+                                <li class=""><a href="#">Other Link</a></li>
+                                <li class=""><a href="#">Other Link</a></li>
+                                <li class="divider"></li>
+                                <li><a @click="logOut">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+    </nav>
+    <div class="container-fluid main-container">
+        <div class="col-md-2 sidebar">
+            <div class="row">
+                <div class="absolute-wrapper"> </div>
+                    <div class="side-menu">
+                        <nav class="navbar navbar-default" role="navigation">
+                            <div class="side-menu-container">
+                                <ul class="nav navbar-nav">
+                                    <li class="active"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                                    <li class="panel panel-default" id="dropdown-1">
+                                        <a data-toggle="collapse" href="#dropdown-1-lvl1">
+                                            <span class="glyphicon glyphicon-user"></span> Inventario <span class="caret"></span>
+                                        </a>
+
+                                        <div id="dropdown-1-lvl1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <ul class="nav navbar-nav">                                                    
+                                                    <li>
+                                                        <router-link tag="a" v-bind:to="{path: '/articles'}">
+                                                            <span class="glyphicon glyphicon-plus-sign"></span>
+                                                            Listar Todo
+                                                        </router-link>
+                                                    </li>
+                                                    <router-link tag="li" v-bind:to="{path: '/articles/add'}">
+                                                    <a class="nav-link btn btn-success btn-sm">
+                                                        <span class="glyphicon glyphicon-plus-sign"></span>
+                                                        Nuevo Articulo
+                                                    </a>
+                                                    </router-link>
+              
+                                                    <!--
+                                                    <li><a href="#">Link</a></li>
+                                                    <li><a href="#">Link</a></li>
+
+                                                    <li class="panel panel-default" id="dropdown-1">
+                                                        <a data-toggle="collapse" href="#dropdown-1-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Sub Level <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-1-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li><a href="#">Link</a></li>
+                                                                    <li><a href="#">Link</a></li>
+                                                                    <li><a href="#">Link</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    
+                                    
+                                    <li><a href="#"><span class="glyphicon glyphicon-plane"></span> Active Link</a></li>
+                                    <li><a href="#"><span class="glyphicon glyphicon-cloud"></span> Link</a></li>
+
+                                    <li class="panel panel-default" id="dropdown">
+                                        <a data-toggle="collapse" href="#dropdown-lvl1">
+                                            <span class="glyphicon glyphicon-user"></span> Sub Level <span class="caret"></span>
+                                        </a>
+
+                                        <div id="dropdown-lvl1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <ul class="nav navbar-nav">
+                                                    <li><a href="#">Link</a></li>
+                                                    <li><a href="#">Link</a></li>
+                                                    <li><a href="#">Link</a></li>
+
+                                                    <li class="panel panel-default" id="dropdown">
+                                                        <a data-toggle="collapse" href="#dropdown-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Sub Level <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li><a href="#">Link</a></li>
+                                                                    <li><a href="#">Link</a></li>
+                                                                    <li><a href="#">Link</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li><a href="#"><span class="glyphicon glyphicon-signal"></span> Link</a></li>
+
+                                </ul>
+                            </div><!-- /.navbar-collapse -->
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        <div class="col-md-10 content">
+            <main class="container_not">
+                <router-view></router-view>
+            </main>
+        </div>
+        <footer class="pull-left footer">
+            <p class="col-md-12">
+                <hr class="divider">
+                Copyright &COPY; 2015 <a href="http://www.pingpong-labs.com">Gravitano</a>
+            </p>
+        </footer>
+    </div>
+</div>
+    
+    <template id="dashboard">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Bienvenido
+            </div>
+            <div class="panel-body">
+                
+            </div>
+        </div>
+    </template>
+    
+    <template id="login">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Ingresar
+            </div>
+            <div class="panel-body">
+                {{ message }}
+                <div class="row">
+                  <div class="col-xs-6">
+                      <div class="well">
+                          <div class="form-group">
+                              <label for="username" class="control-label">Usuario</label>
+                              <input v-model="nick" type="text" class="form-control" id="username" name="username" value="" required="" title="Please enter you username" placeholder="example@gmail.com">
+                              <span class="help-block"></span>
+                          </div>
+                          <div class="form-group">
+                              <label for="password" class="control-label">Contraseña</label>
+                              <input v-model="password" type="password" class="form-control" id="password" name="password" value="" required="" title="Please enter your password">
+                              <span class="help-block"></span>
+                          </div>
+                          <button @click="submitLogin" class="btn btn-success btn-block">Ingresar</button>
+                          <!-- <a href="/forgot/" class="btn btn-default btn-block">Help to login</a> -->
+                      </div>
+                  </div>
+                  <div class="col-xs-6">
+                      <p class="lead">Acceso restringido <span class="text-success">Tecnología e Informacion</span></p>
+                      <ul class="list-unstyled" style="line-height: 2">
+                          <li><span class="fa fa-check text-success"></span> Si desea reportar un inconveniente: </li>
+                          <li><span class="fa fa-check text-success"></span> Haz clic en el boton que encuentras a continuacion.</li>
+                          <!-- <li><a href="#"><u></u></a></li> -->
+                      </ul>
+                      <p><a href="#" class="btn btn-info btn-block">¡Tengo un problema!</a></p>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </template>
+    
+    <template id="articles-list">
+      <div>
+          <div class="container">
+            <div class="actions">
+            </div>
+            <table class="table table-response">
+              <thead>
+              <tr>
+                <th>ID</th>
+                <th>Categoria</th>
+                <th>Localizacion</th>
+                <th>Area</th>
+                <th>Descripcion</th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-if="posts===null">
+                <td colspan="4">Cargando...</td>
+              </tr>
+              <tr v-else v-for="post in posts">
+                <td><router-link v-bind:to="{name: 'articlesView', params: {article_id: post.id}}"></router-link></td>
+                <td>{{ post.category_id.name }}</td>
+                <td>{{ post.location_id.name }}</td>
+                <td>{{ post.area_id.name }}</td>
+                <td>{{ post.content }}</td>
+                <td>
+                    <router-link class="btn btn-default btn-xs" v-bind:to="{name: 'articlesEdit', params: {article_id: post.id}}">
+                        <span class="glyphicon glyphicon-pencil"></span> Modificar
+                    </router-link>
+                </td>
+                <td>
+                    <router-link class="btn btn-info btn-xs" v-bind:to="{name: 'articlesView', params: {article_id: post.id}}">
+                        <span class="glyphicon glyphicon-barcode"></span> Barcode
+                    </router-link>
+                </td>
+                <td>
+                    <!--
+                    <router-link class="btn btn-danger btn-xs" v-bind:to="{name: 'post-delete', params: {post_id: post.id}}">
+                        <span class="glyphicon glyphicon-trash"></span> Eliminar
+                    </router-link>-->
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </template>
+
+    <template id="articles-view">
+        <div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h2>Informacion basica: </h2>
+                        <hr>
+                        <table class="table table-responsive">
+                            <tr>
+                                <th>¿Donde Esta?: </th>
+                                <td>{{ post.location_id.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>¿Donde Pertenece?: </th>
+                                <td>{{ post.area_id.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Categoria: </th>
+                                <td>{{ post.category_id.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Asignado a: </th>
+                                <td>
+                                    {{ post.people_id.id }}
+                                    <hr>{{ post.people_id.nombre }}
+                                    <hr>{{ post.people_id.cedula }}
+                                    <hr>{{ post.people_id.user }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Descripcion: </th>
+                                <td>{{ post.content }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-sm-6">
+                        <h2>Componentes y Seriales: </h2>
+                        <hr>
+                        <table class="table table-response">
+                            <tr v-for="serial in post.serials">
+                                <td>{{ serial.name }}</td>
+                                <td>{{ serial.serial }}</td>
+                                <td>{{ serial.total }}</td>
+                                <td>{{ serial.notes }}</td>
+                                <td>{{ serial.create }}</td>
+                                <td>{{ serial.change }}</td>
+                            </tr>
+                        </table>
+                        <hr>
+                        <h2>Revisiones: </h2>
+                        <table class="table table-response">
+                            <tr v-for="comment in post.comments">
+                                <td>{{ comment.message }}</td>
+                                <td>{{ comment.create }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="articles-edit">
+      <div>
+            <div class="container">
+                <h2>Editar Articulo</h2>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h4>Informacion Básica: </h4>
+                        <p>
+                            <b>Fecha de creación: </b> {{ post.create }}
+                            <br>
+                            <b>Fecha de última modificacion: </b> {{ post.change }}
+                        </p>
+                        <hr>
+                        <form v-on:submit="updatepost">
+                            <div class="form-group">
+                                <label for="edit-content">¿Donde Esta?: </label>
+                                <select v-model="selectedLocation" class="form-control" required="required">
+                                    <option v-for="option in optionsLocations" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">¿Donde Pertenece?: </label>
+                                <select v-model="selectedArea" class="form-control" required="required">
+                                    <option v-for="option in optionsAreas" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Categoria: </label>
+                                <select v-model="selectedCategory" class="form-control" required="required">
+                                    <option v-for="option in optionsCategories" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Asignado a: </label>
+                                <select v-model="selectedPeople" class="form-control" required="required">
+                                    <option v-for="option in optionsPeople" v-bind:value="option.value">{{ option.text }}</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="add-content">Descripcion</label>
+                                <textarea class="form-control" rows="10" required="required" v-model="post.content"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
+                                <router-link class="btn btn-default" v-bind:to="'/'"><span class="glyphicon glyphicon-remove"></span> Cancel</router-link>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4>Seriales: <a class="btn btn-default btn-xs" @click="showSerial"> <span class="glyphicon glyphicon-plus"></span> </a> <a @click="hideSerial" class="btn btn-default btn-xs"> <span class="glyphicon glyphicon-minus"></span> </a> </h4>
+                        <hr>
+                        <div class="row" id="serialNew-pop" style="display:none;">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Nombre: </label>
+                                    <input type="text" v-model="serialNew.name" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Total: </label>
+                                    <input type="number" v-model="serialNew.total" class="form-control" required="required" step="1" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Identificador (S/N): </label>
+                                    <input type="text" v-model="serialNew.serial" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Notas: </label>
+                                    <textarea class="form-control" rows="3" v-model="serialNew.notes" required="required"></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" @click="createSerial">Crear</button>
+                        </div>
+                        <div class="row" id="serialEdit-pop" style="display:none;">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>ID: </label>
+                                    <input type="text" v-model="serialEdit.id" class="form-control" required="required" readonly="readonly" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Nombre: </label>
+                                    <input type="text" v-model="serialEdit.name" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Total: </label>
+                                    <input type="number" v-model="serialEdit.total" class="form-control" required="required" step="1" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Identificador (S/N): </label>
+                                    <input type="text" v-model="serialEdit.serial" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Notas: </label>
+                                    <textarea class="form-control" rows="3" v-model="serialEdit.notes" required="required"></textarea>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" @click="changeSerial">Modificar</button>
+                            <button class="btn btn-default" @click="hideSerialEdit">Cancelar</button>
+                        </div>
+                        <table class="table table-response">
+                                <tr v-for="serial in post.serials">
+                                    <td><a class="btn btn-danger btn-xs" @click="removeSerial(serial.id)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                    <td>{{ serial.name }}</td>
+                                    <td>{{ serial.serial }}</td>
+                                    <td>{{ serial.total }}</td>
+                                    <td>{{ serial.notes }}</td>
+                                    <td><a class="btn btn-warning btn-xs" @click="editSerial(serial.id)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                </tr>
+                        </table>
+                    </div>
+                    <div class="col-sm-12">
+                        <h4>Revisiones: <a class="btn btn-default btn-xs" @click="showComment"> <span class="glyphicon glyphicon-plus"></span> </a> </h4>
+                        <div class="row" id="commentNew-pop" style="display:none;">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Observaciones: </label>
+                                    <textarea class="form-control" rows="3" v-model="commentNew.message" required="required"></textarea>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" @click="createComment">Crear</button>
+                        </div>
+                        <table class="table table-response">
+                            <tr v-for="comment in post.comments">
+                                <td>{{ comment.message }}</td>
+                                <td>{{ comment.create }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </template>
+
+    <template id="articles-delete">
+      <div>
+          <div class="container">
+            <h2>Delete article {{ post.id }}</h2>
+            <form v-on:submit="deletepost">
+              <p>The action cannot be undone.</p>
+              <button type="submit" class="btn btn-danger">Delete</button>
+              <router-link class="btn btn-default" v-bind:to="'/'">Cancel</router-link>
+            </form>
+          </div>
+      </div>
+    </template>
+
+    <template id="articles-add">
+      <div>
+            <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-secondary">
+                <form class="navbar-nav mr-auto form-inline">
+                    <label>Nuevo Articulo</label>
+                </form>
+                <ul class="navbar-nav mt-2 mt-md-0">
+                    <router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
+                        <a class="nav-link btn btn-info btn-sm">
+                            <span class="glyphicon glyphicon-hand-left"></span>
+                            Regresar
+                        </a>
+                    </router-link>
+                </ul>
+            </nav>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h4>Informacion basica: </h4>
+                        <hr>
+                        <form v-on:submit="createpost">
+                            <div class="form-group">
+                                <label for="edit-content">¿Donde Esta?: </label>
+                                <select v-model="post.location_id" class="form-control" required="required">
+                                    <option v-for="option in optionsLocations" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">¿Donde Pertenece?: </label>
+                                <select v-model="post.area_id" class="form-control" required="required">
+                                    <option v-for="option in optionsAreas" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Categoria: </label>
+                                <select v-model="post.category_id" class="form-control" required="required">
+                                    <option v-for="option in optionsCategories" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Asignado a: </label>
+                                <select v-model="post.people_id" class="form-control" required="required">
+                                    <option v-for="option in optionsPeople" v-bind:value="option.value">{{ option.text }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="add-content">Descripcion</label>
+                                <textarea class="form-control" id="add-content" rows="10" v-model="post.content" required="required"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Crear</button>
+                            <router-link class="btn btn-default" v-bind:to="'/'">Cancelar</router-link>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </template>
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
