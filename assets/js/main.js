@@ -110,7 +110,7 @@ var articlesAdd = Vue.extend({
 			});
 		}
 	},
-    computed(){
+    created(){
         var self = this;
         
         if(self.$parent.locations == null || self.$parent.areas == null || self.$parent.categories == null){ 
@@ -120,12 +120,11 @@ var articlesAdd = Vue.extend({
 			self.optionsAreas = self.$parent.areas;
 			self.optionsCategories = self.$parent.categories;
 			
-			api.get('/users.php').then(function (response) {
-                console.log(response);
-				if(!response.data.data){
+			api.get('/users').then(function (response) {
+				if(!response.data.records){
 				}
 				else{
-					self.optionsPeople = response.data.data;
+					self.optionsPeople = response.data.records;
 					console.log(self.optionsPeople);
 				}
 			}).catch(function (error) {
@@ -196,11 +195,12 @@ var articlesEdit = Vue.extend({
 			router.push('/articles');
 		}
 		
-		Forma2.get('/people.php?action=option_list').then(function (response) {
-			if(!response.data.data){
+		api.get('/users').then(function (response) {
+            
+			if(!response.data.records){
 			}
 			else{
-				self.optionsPeople = response.data.data;
+				self.optionsPeople = response.data.records;
 				console.log(self.optionsPeople);
 			}
 		}).catch(function (error) {
