@@ -273,7 +273,7 @@
           <div class="">
             <div class="actions">
             </div>
-            <table class="table table-response">
+            <table class="table table-responsive">
               <thead>
               <tr>
                 <th>ID</th>
@@ -341,10 +341,10 @@
                             <tr>
                                 <th>Asignado a: </th>
                                 <td>
-                                    {{ post.people_id.id }}
-                                    <hr>{{ post.people_id.nombre }}
-                                    <hr>{{ post.people_id.cedula }}
-                                    <hr>{{ post.people_id.user }}
+                                    {{ post.user_id.id }}
+                                    <hr>{{ post.user_id.nombre }}
+                                    <hr>{{ post.user_id.cedula }}
+                                    <hr>{{ post.user_id.user }}
                                 </td>
                             </tr>
                             <tr>
@@ -356,7 +356,7 @@
                     <div class="col-sm-6">
                         <h2>Componentes y Seriales: </h2>
                         <hr>
-                        <table class="table table-response">
+                        <table class="table table-responsive">
                             <tr v-for="serial in post.serials">
                                 <td>{{ serial.name }}</td>
                                 <td>{{ serial.serial }}</td>
@@ -368,7 +368,7 @@
                         </table>
                         <hr>
                         <h2>Revisiones: </h2>
-                        <table class="table table-response">
+                        <table class="table table-responsive">
                             <tr v-for="comment in post.comments">
                                 <td>{{ comment.message }}</td>
                                 <td>{{ comment.create }}</td>
@@ -415,7 +415,7 @@
                             <div class="form-group">
                                 <label for="edit-content">Asignado a: </label>
                                 <select v-model="selectedPeople" class="form-control" required="required">
-                                    <option v-for="option in optionsPeople" v-bind:value="option.value">{{ option.text }}</option>
+                                    <option v-for="option in optionsPeople" v-bind:value="option.id">{{ option.nombre }}</option>
                                 </select>
                             </div>
                             
@@ -493,7 +493,7 @@
                             <button class="btn btn-primary" @click="changeSerial">Modificar</button>
                             <button class="btn btn-default" @click="hideSerialEdit">Cancelar</button>
                         </div>
-                        <table class="table table-response">
+                        <table class="table table-responsive">
                                 <tr v-for="serial in post.serials">
                                     <td><a class="btn btn-danger btn-xs" @click="removeSerial(serial.id)"><span class="glyphicon glyphicon-trash"></span></a></td>
                                     <td>{{ serial.name }}</td>
@@ -515,7 +515,7 @@
                             </div>
                             <button class="btn btn-primary" @click="createComment">Crear</button>
                         </div>
-                        <table class="table table-response">
+                        <table class="table table-responsive">
                             <tr v-for="comment in post.comments">
                                 <td>{{ comment.message }}</td>
                                 <td>{{ comment.create }}</td>
@@ -568,8 +568,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="edit-content">Asignado a: </label>
-                                <select v-model="post.people_id" class="form-control" required="required">
-                                    <option v-for="option in optionsPeople" v-bind:value="option.value">{{ option.text }}</option>
+                                <select v-model="post.user_id" class="form-control" required="required">
+                                    <option v-for="option in optionsPeople" v-bind:value="option.id">{{ option.nombre }}</option>
                                 </select>
                             </div>
                             <div class="form-group">

@@ -55,7 +55,7 @@ var Forma2 = axios.create({
 var posts = null;
 
 function findpost (postId) {
-	if(posts==null){ return { id: 0, category_id: 0, location_id: 0, area_id: 0, content: '', people_id: 0 }; }
+	if(posts==null){ return { id: 0, category_id: 0, location_id: 0, area_id: 0, content: '', user_id: 0 }; }
 	return posts[findpostKey(postId)];
 };
 
@@ -94,7 +94,7 @@ var articlesAdd = Vue.extend({
 				category_id: 0,
 				area_id: 0,
 				location_id: 0,
-				people_id: 0,
+				user_id: 0,
 			}
 		}
 	},
@@ -189,7 +189,7 @@ var articlesEdit = Vue.extend({
         self.selectedCategory = self.post.category_id.id;
         self.selectedLocation = self.post.location_id.id;
         self.selectedArea = self.post.area_id.id;
-        self.selectedPeople = self.post.people_id;
+        self.selectedPeople = self.post.user_id;
 		
 		if(self.post.id == 0){
 			router.push('/articles');
@@ -285,16 +285,16 @@ var articlesEdit = Vue.extend({
 				category_id: this.selectedCategory,
 				location_id: this.selectedLocation,
 				area_id: this.selectedArea,
-				people_id: this.selectedPeople,
+				user_id: this.selectedPeople,
 				content: this.post.content,
 			};
 			
-			api.put('/articles/'+item.id,item).then(function (response) {
-				console.log(response.data);
+			api.put('/articles/'+item.id, item).then(function (response) {
+				console.log(response);
 			}).catch(function (error) {
 				console.log(error);
 			});
-			router.push('/articles');
+			//router.push('/articles');
 		},
         createComment: function(){
 			var self = this;
@@ -351,13 +351,13 @@ var articlesView = Vue.extend({
 			router.push('/articles');
 		}
 		else{
-			Forma2.get('/people.php?action=option_list_revert&idPeople=' + post.people_id).then(function (response) {
+			Forma2.get('/people.php?action=option_list_revert&idPeople=' + post.user_id).then(function (response) {
 			console.log(response.data)
 				if(!response.data.data){
 				
 				}
 				else{
-					self.post.people_id = response.data.data;
+					self.post.user_id = response.data.data;
 				}
 			}).catch(function (error) {
 				console.log(error);
