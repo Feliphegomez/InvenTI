@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `category_id` int(11) NOT NULL,
   `area_id` int(11) NOT NULL,
   `location_id` int(11) NOT NULL,
-  `people_id` varchar(250) DEFAULT '0',
+  `user_id` int(32) unsigned zerofill DEFAULT '00000000000000000000000000000000',
   `content` varchar(255) NOT NULL,
   `create` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `change` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -34,9 +34,11 @@ CREATE TABLE IF NOT EXISTS `articles` (
   KEY `category_id` (`category_id`),
   KEY `area_id` (`area_id`),
   KEY `location_id` (`location_id`),
+  KEY `FK_articles_users` (`user_id`),
   CONSTRAINT `FK_articles_areas` FOREIGN KEY (`area_id`) REFERENCES `areas` (`id`),
   CONSTRAINT `FK_articles_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
-  CONSTRAINT `FK_articles_locations` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`)
+  CONSTRAINT `FK_articles_locations` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`),
+  CONSTRAINT `FK_articles_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 -- La exportación de datos fue deseleccionada.
