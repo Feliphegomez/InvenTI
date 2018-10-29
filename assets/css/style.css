@@ -339,3 +339,8 @@ h1.page-header {
 		margin: 0;
 	}
 }
+
+
+.cursor-pointer {
+	cursor: pointer;
+}

@@ -8,830 +8,1017 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.2.1/vue-router.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.js"></script>
-		<link href="dist/bootstrap/4.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-        .logo {
-          width: 50px;
-          float: left;
-          margin-right: 15px;
-        }
-
-        .form-group {
-          max-width: 500px;
-        }
-
-        .actions {
-          padding: 10px 0;
-        }
-
-        .glyphicon-euro {
-          font-size: 12px;
-        }
-        </style>
+        <link href="dist/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <link href="dist/bootstrap/3.3.7/css/bootstrap-theme.css" rel="stylesheet" id="bootstrap-css">
+		<link href="assets/css/style.css" rel="stylesheet">
     </head>
 <body>
+<div id="app">
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle navbar-toggle-sidebar collapsed">
+                MENU
+                </button>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                
+                <router-link tag="a" class="navbar-brand" v-bind:to="{path: '/'}">AdminPanel</router-link>
+            </div>
 
-<div class="" id="app"><div class=""></div></div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">      
+                <form class="navbar-form navbar-left" method="GET" role="search">
+                    <div class="form-group" @submit="searchGlobal">
+                        <input type="text" name="q" class="form-control" placeholder="Search" v-model="searchText">
+                    </div>
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>{{ userSession.nombre }}</a></li>
+                    <li v-if="userSession.active == false"><router-link tag="a" v-bind:to="{path: '/LogIn'}">Ingresar</router-link></li>
+                    <li class="dropdown " v-if="userSession.active == true">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        Mi Cuenta
+                        <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="dropdown-header">SETTINGS</li>
+                            <li class=""><a href="#">Other Link</a></li>
+                            <li class=""><a href="#">Other Link</a></li>
+                            <li class=""><a href="#">Other Link</a></li>
+                            <li class="divider"></li>
+                            <li><a @click="logOut">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div class="container-fluid main-container">
+        <div class="col-md-2 sidebar">
+            <div class="row">
+                <div class="absolute-wrapper"> </div>
+                    <div class="side-menu">
+                        <nav class="navbar navbar-default" role="navigation">
+                            <div class="side-menu-container">
+                                <ul class="nav navbar-nav">
+                                    <li class="active" v-if="userSession.active == true"><a href="#"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
+                                    <li id="dropdown-1" v-if="userSession.active == true">
+                                        <a data-toggle="collapse" href="#dropdown-1-lvl1">
+                                            <span class="glyphicon glyphicon-user"></span> Inventario <span class="caret"></span>
+                                        </a>
 
-<template id="post-list">
-  <div>
-        <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-secondary">
-            <form class="navbar-nav mr-auto form-inline">
-                <input v-model="searchKey" class="form-control" id="search-element" requred/>
-            </form>  
-            <ul class="navbar-nav mt-2 mt-md-0">
-              <router-link tag="li" class="nav-item" v-bind:to="{path: '/add-post'}">
-              <a class="nav-link btn btn-success btn-sm">
-                <span class="glyphicon glyphicon-plus-sign"></span>
-                Nuevo
-              </a>
-              </router-link>
-            </ul>
-        </nav>
-      <div class="container">
-        <div class="actions">
+                                        <div id="dropdown-1-lvl1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <ul class="nav navbar-nav">                                                    
+                                                    <li>
+                                                        <router-link tag="a" v-bind:to="{path: '/articles'}">
+                                                            <span class="glyphicon glyphicon-plus-sign"></span>
+                                                            Listar Todo
+                                                        </router-link>
+                                                    </li>
+                                                    <router-link tag="li" v-bind:to="{name: 'articlesAdd', params: {} }">
+                                                    <a >
+                                                        <span class="glyphicon glyphicon-plus-sign"></span>
+                                                        Nuevo Articulo
+                                                    </a>
+                                                    </router-link>
+              
+                                                    <!--
+                                                    <li><a href="#">Link</a></li>
+                                                    <li><a href="#">Link</a></li>
+
+                                                    <li class="panel panel-default" id="dropdown-1">
+                                                        <a data-toggle="collapse" href="#dropdown-1-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Sub Level <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-1-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li><a href="#">Link</a></li>
+                                                                    <li><a href="#">Link</a></li>
+                                                                    <li><a href="#">Link</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+									
+									
+                                    <li id="dropdownPersonal-1" v-if="userSession.active == true">
+                                        <a data-toggle="collapse" href="#dropdownPersonal-1-lvl1">
+                                            <span class="glyphicon glyphicon-user"></span> Personal <span class="caret"></span>
+                                        </a>
+
+                                        <div id="dropdownPersonal-1-lvl1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <ul class="nav navbar-nav">                                                    
+                                                    <li>
+                                                        <router-link tag="a" v-bind:to="{path: '/people'}">
+                                                            <span class="glyphicon glyphicon-plus-sign"></span>
+                                                            Listar Personal
+                                                        </router-link>
+                                                    </li>
+                                                    <router-link tag="li" v-bind:to="{name: 'peopleAdd', params: {} }">
+                                                    <a >
+                                                        <span class="glyphicon glyphicon-plus-sign"></span>
+                                                        Nuevo Empleado
+                                                    </a>
+                                                    </router-link>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+									
+                                    <li id="dropdown-2" v-if="userSession.active == true">
+                                        <a data-toggle="collapse" href="#dropdown-2-lvl1">
+                                            <span class="glyphicon glyphicon-user"></span> Opciones <span class="caret"></span>
+                                        </a>
+
+                                        <div id="dropdown-2-lvl1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <ul class="nav navbar-nav">
+                                                    <!--<li><a href="#">Categorias</a></li>-->
+													
+                                                    <li class="panel panel-default" id="dropdown-4">
+                                                        <a data-toggle="collapse" href="#dropdown-4-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Areas <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-4-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="area in areas">
+																		<a class="cursor-pointer"> 
+																			<i @click="areaDelete(area.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="areaUpdate(area.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			
+																			{{ area.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="areaCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="panel panel-default" id="dropdown-5">
+                                                        <a data-toggle="collapse" href="#dropdown-5-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Cargos <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-5-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="cargo in cargos">
+																		<a class="cursor-pointer"> 
+																			<i @click="appointmentDelete(cargo.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="appointmentUpdate(cargo.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			<i @click="appointmentPermissionZoom(cargo.permission_id, cargo.id)"  class="glyphicon glyphicon-cog"></i> 
+																			{{ cargo.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="appointmentCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="panel panel-default" id="dropdown-6">
+                                                        <a data-toggle="collapse" href="#dropdown-6-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Categorias (Inventario) <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-6-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="category in categories">
+																		<a class="cursor-pointer"> 
+																			<i @click="categoryInventaryDelete(category.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="categoryInventaryUpdate(category.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ category.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="categoryInventaryCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
+                                                    <li class="panel panel-default" id="dropdown-7">
+                                                        <a data-toggle="collapse" href="#dropdown-7-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Estados (Personal) <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-7-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="estado in estados">
+																		<a class="cursor-pointer"> 
+																			<i @click="statusPeopleDelete(estado.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="statusPeopleUpdate(estado.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ estado.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="statusPeopleCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
+                                                    <li class="panel panel-default" id="dropdown-8">
+                                                        <a data-toggle="collapse" href="#dropdown-8-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Locaciones <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-8-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="location in locations">
+																		<a class="cursor-pointer"> 
+																			<i @click="locationDelete(location.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="locationUpdate(location.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ location.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="locationCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
+                                                    <li class="panel panel-default" id="dropdown-9">
+                                                        <a data-toggle="collapse" href="#dropdown-9-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Pilotos <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-9-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="pilot in pilots">
+																		<a class="cursor-pointer"> 
+																			<i @click="pilotDelete(pilot.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="pilotUpdate(pilot.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ pilot.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="pilotCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
+                                                    <li class="panel panel-default" id="dropdown-10">
+                                                        <a data-toggle="collapse" href="#dropdown-10-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Roles <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-10-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="rol in rols">
+																		<a class="cursor-pointer"> 
+																			<i @click="rolDelete(rol.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="rolUpdate(rol.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ rol.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="rolCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    
+                                    <!--
+                                    <li><a href="#"><span class="glyphicon glyphicon-plane"></span> Active Link</a></li>
+                                    <li><a href="#"><span class="glyphicon glyphicon-cloud"></span> Link</a></li>
+
+                                    <li class="panel panel-default" id="dropdown">
+                                        <a data-toggle="collapse" href="#dropdown-lvl1">
+                                            <span class="glyphicon glyphicon-user"></span> Sub Level <span class="caret"></span>
+                                        </a>
+
+                                        <div id="dropdown-lvl1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <ul class="nav navbar-nav">
+                                                    <li><a href="#">Link</a></li>
+                                                    <li><a href="#">Link</a></li>
+                                                    <li><a href="#">Link</a></li>
+
+                                                    <li class="panel panel-default" id="dropdown">
+                                                        <a data-toggle="collapse" href="#dropdown-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Sub Level <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li><a href="#">Link</a></li>
+                                                                    <li><a href="#">Link</a></li>
+                                                                    <li><a href="#">Link</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li><a href="#"><span class="glyphicon glyphicon-signal"></span> Link</a></li>
+                                    -->
+
+                                </ul>
+                            </div><!-- /.navbar-collapse -->
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        <div class="col-md-10 content">
+            <main class="container_not">
+                <router-view></router-view>
+            </main>
         </div>
-        <table class="table table-response">
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Categoria</th>
-            <th>Localizacion</th>
-            <th>Area</th>
-            <th>Descripcion</th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-if="posts===null">
-            <td colspan="4">Cargando...</td>
-          </tr>
-          <tr v-else v-for="post in filteredposts">
-            <td><router-link v-bind:to="{name: 'post', params: {post_id: post.id}}">{{ post.id }}</router-link></td>
-            <td>{{ post.category_id.name }}</td>
-            <td>{{ post.location_id.name }}</td>
-            <td>{{ post.area_id.name }}</td>
-            <td>{{ post.content }}</td>
-            <td>
-                <router-link class="btn btn-default btn-xs" v-bind:to="{name: 'post-edit', params: {post_id: post.id}}">
-                    <span class="glyphicon glyphicon-pencil"></span> Modificar
-                </router-link>
-            </td>
-            <td>
-                <router-link class="btn btn-info btn-xs" v-bind:to="{name: 'post', params: {post_id: post.id}}">
-                    <span class="glyphicon glyphicon-barcode"></span> Barcode
-                </router-link>
-            </td>
-            <td>
-                <router-link class="btn btn-danger btn-xs" v-bind:to="{name: 'post-delete', params: {post_id: post.id}}">
-                    <span class="glyphicon glyphicon-trash"></span> Eliminar
-                </router-link>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-  </div>
-</template>
-
-<template id="add-post">
-  <div>
-        <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-secondary">
-            <form class="navbar-nav mr-auto form-inline">
-				<label>Nuevo Articulo</label>
-            </form>
-            <ul class="navbar-nav mt-2 mt-md-0">
-				<router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
-					<a class="nav-link btn btn-info btn-sm">
-						<span class="glyphicon glyphicon-hand-left"></span>
-						Regresar
-					</a>
-				</router-link>
-            </ul>
-        </nav>
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-6">
-					<h4>Informacion basica: </h4>
-					<hr>
-					<form v-on:submit="createpost">
-						<div class="form-group">
-							<label for="edit-content">¿Donde Esta?: </label>
-							<select v-model="post.location_id" class="form-control" required="required">
-								<option v-for="option in optionsLocations" v-bind:value="option.id">{{ option.name }}</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="edit-content">¿Donde Pertenece?: </label>
-							<select v-model="post.area_id" class="form-control" required="required">
-								<option v-for="option in optionsAreas" v-bind:value="option.id">{{ option.name }}</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="edit-content">Categoria: </label>
-							<select v-model="post.category_id" class="form-control" required="required">
-								<option v-for="option in optionsCategories" v-bind:value="option.id">{{ option.name }}</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="edit-content">Asignado a: </label>
-							<select v-model="post.people_id" class="form-control" required="required">
-								<option v-for="option in optionsPeople" v-bind:value="option.value">{{ option.text }}</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="add-content">Descripcion</label>
-							<textarea class="form-control" id="add-content" rows="10" v-model="post.content" required="required"></textarea>
-						</div>
-						<button type="submit" class="btn btn-primary">Crear</button>
-						<router-link class="btn btn-default" v-bind:to="'/'">Cancelar</router-link>
-					</form>
-				</div>
-			</div>
-		</div>
-  </div>
-</template>
-
-<template id="post">
-    <div>
-        <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-secondary">
-            <form class="navbar-nav mr-auto form-inline">
-				<label>Ver Articulo</label>
-            </form>  
-            <ul class="navbar-nav mt-2 mt-md-0">
-				<router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
-					<a class="nav-link btn btn-info btn-sm">
-						<span class="glyphicon glyphicon-hand-left"></span> <!-- glyphicon glyphicon-arrow-left -->
-						Regresar
-					</a>
-				</router-link>
-            </ul>
-        </nav>
-		<div class="container">
-			<h2>Informacion basica: </h2>
-				<hr>
-			<div class="row">
-				<div class="col-sm-6">
-					<table class="table table-responsive">
-						<tr>
-							<th>¿Donde Esta?: </th>
-							<td>{{ post.location_id.name }}</td>
-						</tr>
-						<tr>
-							<th>¿Donde Pertenece?: </th>
-							<td>{{ post.area_id.name }}</td>
-						</tr>
-						<tr>
-							<th>Categoria: </th>
-							<td>{{ post.category_id.name }}</td>
-						</tr>
-						<tr>
-							<th>Asignado a: </th>
-							<td>
-								{{ post.people_id.id }}
-								<hr>{{ post.people_id.nombre }}
-								<hr>{{ post.people_id.cedula }}
-								<hr>{{ post.people_id.user }}
-							</td>
-						</tr>
-						<tr>
-							<th>Descripcion: </th>
-							<td>{{ post.content }}</td>
-						</tr>
-					</table>
-				</div>
-				<div class="col-sm-6">
-					<h2>Componentes y Seriales: </h2>
-					<table class="table table-response">
-						<tr v-for="serial in post.serials">
-							<td>{{ serial.name }}</td>
-							<td>{{ serial.serial }}</td>
-							<td>{{ serial.total }}</td>
-							<td>{{ serial.notes }}</td>
-							<td>{{ serial.create }}</td>
-							<td>{{ serial.change }}</td>
-						</tr>
-					</table>
-					<hr>
-					<h2>Revisiones: </h2>
-					<table class="table table-response">
-						<tr v-for="comment in post.comments">
-							<td>{{ comment.message }}</td>
-							<td>{{ comment.create }}</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
+        <footer class="pull-left footer">
+            <p class="col-md-12">
+                <hr class="divider">
+                Copyright &COPY; 2015 <a href="http://www.pingpong-labs.com">Gravitano</a>
+            </p>
+        </footer>
     </div>
-</template>
+</div>
+    
+    <template id="dashboard">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Bienvenido
+            </div>
+            <div class="panel-body">
+				<p>
+					El inventario es una de las partes fundamentales del capital en una empresa, ya que de su correcta administración depende en gran parte el éxito y rentabilidad de la misma; 
+					por lo cual, diseñar estrategias para manejarlo y monitorearlo no es un tema menor.
+				</p>
+            </div>
+        </div>
+    </template>
+    
+    <template id="login">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Ingresar
+            </div>
+            <div class="panel-body">
+                {{ message }}
+                <div class="row">
+                  <div class="col-xs-6">
+                      <div class="well">
+                          <div class="form-group">
+                              <label for="username" class="control-label">Usuario</label>
+                              <input v-model="nick" type="text" class="form-control" id="username" name="username" value="" required="" title="Please enter you username" placeholder="example@gmail.com">
+                              <span class="help-block"></span>
+                          </div>
+                          <div class="form-group">
+                              <label for="password" class="control-label">Contraseña</label>
+                              <input v-model="password" type="password" class="form-control" id="password" name="password" value="" required="" title="Please enter your password">
+                              <span class="help-block"></span>
+                          </div>
+                          <button @click="submitLogin" class="btn btn-success btn-block">Ingresar</button>
+                          <!-- <a href="/forgot/" class="btn btn-default btn-block">Help to login</a> -->
+                      </div>
+                  </div>
+                  <div class="col-xs-6">
+                      <p class="lead">Acceso restringido <span class="text-success">Tecnología e Informacion</span></p>
+                      <ul class="list-unstyled" style="line-height: 2">
+                          <li><span class="fa fa-check text-success"></span> Si desea reportar un inconveniente: </li>
+                          <li><span class="fa fa-check text-success"></span> Haz clic en el boton que encuentras a continuacion.</li>
+                          <!-- <li><a href="#"><u></u></a></li> -->
+                      </ul>
+                      <p><a href="#" class="btn btn-info btn-block">¡Tengo un problema!</a></p>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </template>
+    
+    <template id="articles-list">
+      <div>
+          <div class="">
+            <div class="actions">
+            </div>
+            <table class="table table-responsive">
+              <thead>
+              <tr>
+                <th>ID</th>
+                <th>Categoria</th>
+                <th>Localizacion</th>
+                <th>Area</th>
+                <th>Descripcion</th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-if="posts===null">
+                <td colspan="4">Cargando...</td>
+              </tr>
+              <tr v-else v-for="post in posts">
+                <td><router-link v-bind:to="{name: 'articlesView', params: {article_id: post.id}}"></router-link></td>
+                <td>{{ post.category_id.name }}</td>
+                <td>{{ post.location_id.name }}</td>
+                <td>{{ post.area_id.name }}</td>
+                <td>{{ post.content }}</td>
+                <td>{{ post.user_id.nombre }}</td>
+                <td>
+                    <router-link class="btn btn-default btn-xs" v-bind:to="{name: 'articlesEdit', params: {article_id: post.id}}">
+                        <span class="glyphicon glyphicon-pencil"></span> 
+                    </router-link>
+                </td>
+                <td>
+                    <router-link class="btn btn-info btn-xs" v-bind:to="{name: 'articlesView', params: {article_id: post.id}}">
+                        <span class="glyphicon glyphicon-barcode"></span> 
+                    </router-link>
+                </td>
+                <td>
+                    <router-link class="btn btn-danger btn-xs" v-bind:to="{name: 'articlesDelete', params: {article_id: post.id}}">
+                        <span class="glyphicon glyphicon-trash"></span> 
+                    </router-link>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </template>
 
-<template id="post-edit">
-  <div>
-        <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-secondary">
-            <form class="navbar-nav mr-auto form-inline">
-            </form>  
-            <ul class="navbar-nav mt-2 mt-md-0">
-				<router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
-					<a class="nav-link btn btn-info btn-sm">
-						<span class="glyphicon glyphicon-hand-left"></span>
-						Regresar
-					</a>
-				</router-link>
-            </ul>
-        </nav>
-        <div class="container">
-            <h2>Editar Articulo</h2>
-			<div class="row">
-				<div class="col-sm-6">
-					<h4>Informacion Básica: </h4>
-                    <p>
-                        <b>Fecha de creación: </b> {{ post.create }}
-                        <br>
-                        <b>Fecha de última modificacion: </b> {{ post.change }}
-                    </p>
-					<hr>
-                    <form v-on:submit="updatepost">
-						<div class="form-group">
-							<label for="edit-content">¿Donde Esta?: </label>
-							<select v-model="selectedLocation" class="form-control" required="required">
-								<option v-for="option in optionsLocations" v-bind:value="option.id">{{ option.name }}</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="edit-content">¿Donde Pertenece?: </label>
-							<select v-model="selectedArea" class="form-control" required="required">
-								<option v-for="option in optionsAreas" v-bind:value="option.id">{{ option.name }}</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="edit-content">Categoria: </label>
-							<select v-model="selectedCategory" class="form-control" required="required">
-								<option v-for="option in optionsCategories" v-bind:value="option.id">{{ option.name }}</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="edit-content">Asignado a: </label>
-							<select v-model="selectedPeople" class="form-control" required="required">
-								<option v-for="option in optionsPeople" v-bind:value="option.value">{{ option.text }}</option>
-							</select>
-						</div>
-						
-						<div class="form-group">
-							<label for="add-content">Descripcion</label>
-							<textarea class="form-control" rows="10" required="required" v-model="post.content"></textarea>
-						</div>
-						<div class="form-group">
-                            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
-                            <router-link class="btn btn-default" v-bind:to="'/'"><span class="glyphicon glyphicon-remove"></span> Cancel</router-link>
-						</div>
-                    </form>
-				</div>
-				<div class="col-sm-6">
-					<h4>Seriales: <a class="btn btn-default btn-xs" @click="showSerial"> <span class="glyphicon glyphicon-plus"></span> </a> <a @click="hideSerial" class="btn btn-default btn-xs"> <span class="glyphicon glyphicon-minus"></span> </a> </h4>
-                    <hr>
-                    <div class="row" id="serialNew-pop" style="display:none;">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Nombre: </label>
-                                <input type="text" v-model="serialNew.name" class="form-control" required="required" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Total: </label>
-                                <input type="number" v-model="serialNew.total" class="form-control" required="required" step="1" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Identificador (S/N): </label>
-                                <input type="text" v-model="serialNew.serial" class="form-control" required="required" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Notas: </label>
-                                <textarea class="form-control" rows="3" v-model="serialNew.notes" required="required"></textarea>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary" @click="createSerial">Crear</button>
+    <template id="articles-view">
+        <div>
+            <div class="">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h2>Informacion basica: </h2>
+                        <hr>
+                        <table class="table table-responsive">
+                            <tr>
+                                <th>¿Donde Esta?: </th>
+                                <td>{{ post.location_id.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>¿Donde Pertenece?: </th>
+                                <td>{{ post.area_id.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Categoria: </th>
+                                <td>{{ post.category_id.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Asignado a: </th>
+                                <td>
+                                    {{ post.user_id.id }}
+                                    <hr>{{ post.user_id.nombre }}
+                                    <hr>{{ post.user_id.cedula }}
+                                    <hr>{{ post.user_id.user }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Descripcion: </th>
+                                <td>{{ post.content }}</td>
+                            </tr>
+                        </table>
                     </div>
-                    <div class="row" id="serialEdit-pop" style="display:none;">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>ID: </label>
-                                <input type="text" v-model="serialEdit.id" class="form-control" required="required" readonly="readonly" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Nombre: </label>
-                                <input type="text" v-model="serialEdit.name" class="form-control" required="required" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Total: </label>
-                                <input type="number" v-model="serialEdit.total" class="form-control" required="required" step="1" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Identificador (S/N): </label>
-                                <input type="text" v-model="serialEdit.serial" class="form-control" required="required" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Notas: </label>
-                                <textarea class="form-control" rows="3" v-model="serialEdit.notes" required="required"></textarea>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" @click="changeSerial">Modificar</button>
-                        <button class="btn btn-default" @click="hideSerialEdit">Cancelar</button>
-                    </div>
-					<table class="table table-response">
+                    <div class="col-sm-6">
+                        <h2>Componentes y Seriales: </h2>
+                        <hr>
+                        <table class="table table-responsive">
                             <tr v-for="serial in post.serials">
-                                <td><a class="btn btn-danger btn-xs" @click="removeSerial(serial.id)"><span class="glyphicon glyphicon-trash"></span></a></td>
                                 <td>{{ serial.name }}</td>
                                 <td>{{ serial.serial }}</td>
                                 <td>{{ serial.total }}</td>
                                 <td>{{ serial.notes }}</td>
-                                <td><a class="btn btn-warning btn-xs" @click="editSerial(serial.id)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                <td>{{ serial.create }}</td>
+                                <td>{{ serial.change }}</td>
                             </tr>
-					</table>
-				</div>
-                <div class="col-sm-12">
-                    <h4>Revisiones: <a class="btn btn-default btn-xs" @click="showComment"> <span class="glyphicon glyphicon-plus"></span> </a> </h4>
-                    <div class="row" id="commentNew-pop" style="display:none;">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Observaciones: </label>
-                                <textarea class="form-control" rows="3" v-model="commentNew.message" required="required"></textarea>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" @click="createComment">Crear</button>
+                        </table>
+                        <hr>
+                        <h2>Revisiones: </h2>
+                        <table class="table table-responsive">
+                            <tr v-for="comment in post.comments">
+                                <td>{{ comment.message }}</td>
+                                <td>{{ comment.create }}</td>
+                            </tr>
+                        </table>
                     </div>
-                    <table class="table table-response">
-                        <tr v-for="comment in post.comments">
-                            <td>{{ comment.message }}</td>
-                            <td>{{ comment.create }}</td>
-                        </tr>
-                    </table>
                 </div>
             </div>
         </div>
-  </div>
-</template>
+    </template>
 
-<template id="post-delete">
-  <div>
-        <nav class="navbar navbar-expand-md navbar-dark sticky-top bg-secondary">
-            <form class="navbar-nav mr-auto form-inline">
-            </form>  
-            <ul class="navbar-nav mt-2 mt-md-0">
-				<router-link tag="li" class="nav-item" v-bind:to="{path: '/'}">
-					<a class="nav-link btn btn-info btn-sm">
-						<span class="glyphicon glyphicon-hand-left"></span>
-						Regresar
-					</a>
-				</router-link>
-            </ul>
-        </nav>
-      <div class="container">
-        <h2>Delete article {{ post.id }}</h2>
-        <form v-on:submit="deletepost">
-          <p>The action cannot be undone.</p>
-          <button type="submit" class="btn btn-danger">Delete</button>
-          <router-link class="btn btn-default" v-bind:to="'/'">Cancel</router-link>
-        </form>
+    <template id="articles-edit">
+      <div>
+            <div class="">
+                <h2>Editar Articulo</h2>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h4>Informacion Básica: </h4>
+                        <p>
+                            <b>Fecha de creación: </b> {{ post.create }}
+                            <br>
+                            <b>Fecha de última modificacion: </b> {{ post.change }}
+                        </p>
+                        <hr>
+                        <form v-on:submit="updatepost">
+                            <div class="form-group">
+                                <label for="edit-content">¿Donde Esta?: </label>
+                                <select v-model="selectedLocation" class="form-control" required="required">
+                                    <option v-for="option in optionsLocations" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">¿Donde Pertenece?: </label>
+                                <select v-model="selectedArea" class="form-control" required="required">
+                                    <option v-for="option in optionsAreas" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Categoria: </label>
+                                <select v-model="selectedCategory" class="form-control" required="required">
+                                    <option v-for="option in optionsCategories" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Asignado a: </label>
+                                <select v-model="selectedPeople" class="form-control" required="required">
+                                    <option v-for="option in optionsPeople" v-bind:value="option.id">{{ option.nombre }}</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="add-content">Descripcion</label>
+                                <textarea class="form-control" rows="10" required="required" v-model="post.content"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
+                                <router-link class="btn btn-default" v-bind:to="'/articles'"><span class="glyphicon glyphicon-remove"></span> Cancel</router-link>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4>Seriales: <a class="btn btn-default btn-xs" @click="showSerial"> <span class="glyphicon glyphicon-plus"></span> </a> <a @click="hideSerial" class="btn btn-default btn-xs"> <span class="glyphicon glyphicon-minus"></span> </a> </h4>
+                        <hr>
+                        <div class="row" id="serialNew-pop" style="display:none;">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Nombre: </label>
+                                    <input type="text" v-model="serialNew.name" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Total: </label>
+                                    <input type="number" v-model="serialNew.total" class="form-control" required="required" step="1" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Identificador (S/N): </label>
+                                    <input type="text" v-model="serialNew.serial" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Notas: </label>
+                                    <textarea class="form-control" rows="3" v-model="serialNew.notes" required="required"></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" @click="createSerial">Crear</button>
+                        </div>
+                        <div class="row" id="serialEdit-pop" style="display:none;">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>ID: </label>
+                                    <input type="text" v-model="serialEdit.id" class="form-control" required="required" readonly="readonly" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Nombre: </label>
+                                    <input type="text" v-model="serialEdit.name" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Total: </label>
+                                    <input type="number" v-model="serialEdit.total" class="form-control" required="required" step="1" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Identificador (S/N): </label>
+                                    <input type="text" v-model="serialEdit.serial" class="form-control" required="required" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Notas: </label>
+                                    <textarea class="form-control" rows="3" v-model="serialEdit.notes" required="required"></textarea>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" @click="changeSerial">Modificar</button>
+                            <button class="btn btn-default" @click="hideSerialEdit">Cancelar</button>
+                        </div>
+                        <table class="table table-responsive">
+                                <tr v-for="serial in post.serials">
+                                    <td><a class="btn btn-danger btn-xs" @click="removeSerial(serial.id)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                    <td>{{ serial.name }}</td>
+                                    <td>{{ serial.serial }}</td>
+                                    <td>{{ serial.total }}</td>
+                                    <td>{{ serial.notes }}</td>
+                                    <td><a class="btn btn-warning btn-xs" @click="editSerial(serial.id)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                </tr>
+                        </table>
+                    </div>
+                    <div class="col-sm-12">
+                        <h4>Revisiones: <a class="btn btn-default btn-xs" @click="showComment"> <span class="glyphicon glyphicon-plus"></span> </a> </h4>
+                        <div class="row" id="commentNew-pop" style="display:none;">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Observaciones: </label>
+                                    <textarea class="form-control" rows="3" v-model="commentNew.message" required="required"></textarea>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" @click="createComment">Crear</button>
+                        </div>
+                        <table class="table table-responsive">
+                            <tr v-for="comment in post.comments">
+                                <td>{{ comment.message }}</td>
+                                <td>{{ comment.create }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
       </div>
-  </div>
-</template>
+    </template>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/popper.js/dist/umd/popper.min.js"></script>
-<script src="dist/bootstrap/4.1.3/dist/js/bootstrap.min.js"></script>
+    <template id="articles-delete">
+      <div>
+          <div class="">
+            <h2>Delete article {{ post.id }}</h2>
+            <form v-on:submit="deletepost">
+              <p>The action cannot be undone.</p>
+              <button type="submit" class="btn btn-danger">Delete</button>
+              <router-link class="btn btn-default" v-bind:to="'/articles'">Cancel</router-link>
+            </form>
+          </div>
+      </div>
+    </template>
 
-<script>
-var posts = null;
+    <template id="articles-add">
+      <div>
+            <div class="">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Informacion basica: </h4>
+                        <hr>
+                        <form v-on:submit="createpost">
+                            <div class="form-group">
+                                <label for="edit-content">¿Donde Esta?: </label>
+                                <select v-model="post.location_id" class="form-control" required="required">
+                                    <option v-for="option in optionsLocations" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">¿Donde Pertenece?: </label>
+                                <select v-model="post.area_id" class="form-control" required="required">
+                                    <option v-for="option in optionsAreas" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Categoria: </label>
+                                <select v-model="post.category_id" class="form-control" required="required">
+                                    <option v-for="option in optionsCategories" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Asignado a: </label>
+                                <select v-model="post.user_id" class="form-control" required="required">
+                                    <option v-for="option in optionsPeople" v-bind:value="option.id">{{ option.nombre }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="add-content">Descripcion</label>
+                                <textarea class="form-control" id="add-content" rows="10" v-model="post.content" required="required"></textarea>
+                            </div>
+                            <a class="btn btn-info" @click="templateInfoPerson">Tomar datos personales</a>
+                            <button type="submit" class="btn btn-primary">Crear</button>
+                            <router-link class="btn btn-default" v-bind:to="'/articles'">Cancelar</router-link>
+							
+							
+                        </form>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </template>
 
-var api = axios.create({
-  baseURL: location.pathname + 'api/api.php/records'
-});
+    <template id="people-list">
+      <div>
+          <div class="">
+            <div class="actions">
+            </div>
+            <table class="table table-responsive">
+              <thead>
+              <tr>
+                <th>ID</th>
+                <th>nick</th>
+                <th>nombre</th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-if="people===null">
+                <td colspan="4">Cargando...</td>
+              </tr>
+              <tr v-else v-for="person in people">
+                <td><router-link v-bind:to="{name: 'articlesView', params: {article_id: person.id}}"></router-link></td>
+                <td>{{ person.nick }}</td>
+                <td>{{ person.nombre }}</td>
+                <td>
+                    <router-link class="btn btn-default btn-xs" v-bind:to="{name: 'peopleEdit', params: {person_id: person.id}}">
+                        <span class="glyphicon glyphicon-pencil"></span> Modificar
+                    </router-link>
+                </td>
+                <td>
+                    <router-link class="btn btn-info btn-xs" v-bind:to="{name: 'peopleView', params: {person_id: person.id}}">
+                        <span class="glyphicon glyphicon-barcode"></span> Ver
+                    </router-link>
+                </td>
+                <td>
+                    <router-link class="btn btn-danger btn-xs" v-bind:to="{name: 'peopleDelete', params: {person_id: person.id}}">
+                        <span class="glyphicon glyphicon-trash"></span> Eliminar
+                    </router-link>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </template>
 
-var Forma2 = axios.create({
-  baseURL: location.pathname + '../forma2/api/v1.0/'
-});
+    <template id="people-add">
+      <div>
+            <div class="">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Informacion basica: </h4>
+                        <hr>
+                        <form v-on:submit="createperson">
+                            <div class="form-group">
+                                <label for="edit-content">Cedula: </label>
+								<input class="form-control" type="text" value="" v-model="person.cedula" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Nombre: </label>
+								<input class="form-control" type="text" value="" v-model="person.nombre" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Nick: </label>
+								<input class="form-control" type="text" value="" v-model="person.nick" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Contraseña: </label>
+								<input class="form-control" type="text" value="" v-model="person.hash" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Cargo: </label>
+                                <select v-model="person.cargo_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.cargos" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Piloto: </label>
+                                <select v-model="person.pilot_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.pilots" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Estado: </label>
+                                <select v-model="person.estado_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.estados" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Fecha de Nacimiento: </label>
+								<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_nacimiento" placeholder="Año/Mes/Día" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Fecha de Ingreso: </label>
+								<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_ingreso" placeholder="Año/Mes/Día" value="2018-01-01" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Rol: </label>
+                                <select v-model="person.rol_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.rols" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Ubicacion: </label>
+                                <select v-model="person.location_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.locations" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+							
+                            <div class="form-group">
+                                <label for="add-content">Mas info: </label>
+                                <textarea class="form-control" id="add-content" rows="10" v-model="person.more"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Crear</button>
+                            <router-link class="btn btn-default" v-bind:to="'/articles'">Cancelar</router-link>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </template>
+	
+    <template id="people-edit">
+      <div>
+            <div class="">
+                <h2>Editar Personal</h2>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Informacion Básica: </h4>
+						
+                        <form v-on:submit="updateperson">
+                            <div class="form-group">
+                                <label for="edit-content">Cedula: </label>
+								<input class="form-control" type="text" value="" v-model="person.cedula" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Nombre: </label>
+								<input class="form-control" type="text" value="" v-model="person.nombre" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Nick: </label>
+								<input class="form-control" type="text" value="" v-model="person.nick" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Contraseña: </label>
+								<input class="form-control" type="text" value="" v-model="person.hash" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Cargo: </label>
+                                <select v-model="person.cargo_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.cargos" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Piloto: </label>
+                                <select v-model="person.pilot_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.pilots" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Estado: </label>
+                                <select v-model="person.estado_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.estados" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Fecha de Nacimiento: </label>
+								<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_nacimiento" placeholder="Año/Mes/Día" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Fecha de Ingreso: </label>
+								<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_ingreso" placeholder="Año/Mes/Día" value="2018-01-01" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Rol: </label>
+                                <select v-model="person.rol_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.rols" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Ubicacion: </label>
+                                <select v-model="person.location_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.locations" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+							
+                            <div class="form-group">
+                                <label for="add-content">Mas info: </label>
+                                <textarea class="form-control" id="add-content" rows="10" v-model="person.more"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <router-link class="btn btn-default" v-bind:to="'/articles'">Cancelar</router-link>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </template>
+	
+    <template id="people-view">
+      <div>
+            <div class="">
+                <h2>Visor de Personal</h2>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Informacion Básica: </h4>
+						<div class="form-group">
+							<label for="edit-content">Cedula: </label>
+							<br>
+							{{ person.cedula }}
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Nombre: </label>
+							<br>
+							{{ person.nombre }}
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Nick: </label>
+							<br>
+							{{ person.nick }}
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Contraseña: </label>
+							<br>
+							{{ person.hash }}
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Cargo: </label>
+							<select v-model="person.cargo_id" class="form-control" disabled="disabled">
+								<option v-for="option in $parent.cargos" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Piloto: </label>
+							<select v-model="person.pilot_id" class="form-control" disabled="disabled">
+								<option v-for="option in $parent.pilots" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Estado: </label>
+							<select v-model="person.estado_id" class="form-control" disabled="disabled">
+								<option v-for="option in $parent.estados" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Fecha de Nacimiento: </label>
+							<br>
+							{{ person.fecha_nacimiento }}
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Fecha de Ingreso: </label>
+							<br>
+							{{ person.fecha_ingreso }}
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Rol: </label>
+							<select v-model="person.rol_id" class="form-control" disabled="disabled">
+								<option v-for="option in $parent.rols" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Ubicacion: </label>
+							<select v-model="person.location_id" class="form-control" disabled="disabled">
+								<option v-for="option in $parent.locations" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						
+						<div class="form-group">
+							<label for="add-content">Mas info: </label>
+							<br>
+							{{ person.more }}
+						</div>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </template>
 
-function findpost (postId) {
-	if(posts==null){ return { id: 0, category_id: 0, location_id: 0, area_id: 0, content: '', people_id: 0 }; }
-	return posts[findpostKey(postId)];
-};
+    <template id="people-delete">
+      <div>
+          <div class="">
+            <h2>Delete personal {{ person.id }}</h2>
+            <form v-on:submit="deleteperson">
+              <p>The action cannot be undone.</p>
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+              <router-link class="btn btn-default" v-bind:to="'/people'">Cancelar</router-link>
+            </form>
+          </div>
+      </div>
+    </template>
 
-function findpostKey (postId) {
-	if(posts==null){ return 0; }
-		
-	for (var key = 0; key < posts.length; key++) {
-		if (posts[key].id == postId) {
-			return key;
-		}
-	}
-};
 
-var List = Vue.extend({
-  template: '#post-list',
-  data: function () {
-    return {
-        posts: posts,
-        searchKey: this.$parent.searchKey
-    };
-  },
-  mounted: function () {
-    var self = this;
-    
-    api.get('/articles?join=categories&join=areas&join=locations&join=comments&join=serials', {
-        params: {
-            
-        }
-    }).then(function (response) {
-        posts = self.posts = response.data.records;
-    }).catch(function (error) {
-        console.log(error);
-    });
-  },
-  computed: {
-    filteredposts: function () {
-      return this.posts.filter(function (post) {
-        return this.searchKey=='' || post.content.indexOf(this.searchKey) !== -1;
-      },this);
-    }
-  }
-});
-
-var post = Vue.extend({
-	template: '#post',
-	data: function () {
-		return {
-			post: findpost(this.$route.params.post_id)
-		};
-	},
-    created(){
-        var self = this;
-		post = findpost(this.$route.params.post_id);
-		
-		if(post.id == undefined){
-			self.$parent.loadBasicList();
-		}
-		if(post.id == 0){
-			router.push('/');
-		}
-		else{
-			Forma2.get('/people.php?action=option_list_revert&idPeople=' + post.people_id).then(function (response) {
-			console.log(response.data)
-				if(!response.data.data){
-				
-				}
-				else{
-					self.post.people_id = response.data.data;
-				}
-			}).catch(function (error) {
-				console.log(error);
-			});
-		}
-    },
-    mounted(){
-        var self = this;
-    }
-});
-
-var postEdit = Vue.extend({
-	template: '#post-edit',
-	data: function () {
-		return {
-			post: findpost(this.$route.params.post_id),
-			selectedLocation: '',
-			selectedArea: '',
-			selectedCategory: '',
-			selectedPeople: '',
-			optionsLocations: this.$parent.locations,
-			optionsAreas: this.$parent.areas,
-			optionsCategories: this.$parent.categories,
-			optionsPeople: [],
-            serialNew: {
-                name: '',
-                total: 0,
-                serial: '',
-                notes: ''
-            },
-            serialEdit: {
-                id: 0,
-                name: '',
-                total: 0,
-                serial: '',
-                notes: ''
-            },
-            commentNew: {
-                article_id: 0,
-                message: ''
-            }
-		};
-	},
-    created(){
-        var self = this;
-        self.selectedCategory = self.post.category_id.id;
-        self.selectedLocation = self.post.location_id.id;
-        self.selectedArea = self.post.area_id.id;
-        self.selectedPeople = self.post.people_id;
-		
-		if(self.post.id == 0){
-			router.push('/');
-		}
-		
-		Forma2.get('/people.php?action=option_list').then(function (response) {
-			if(!response.data.data){
-			}
-			else{
-				self.optionsPeople = response.data.data;
-				console.log(self.optionsPeople);
-			}
-		}).catch(function (error) {
-			console.log(error);
-		});
-		
-    },
-	methods: {
-        editSerial: function(idSerial){
-            var self = this;
-            
-            api.get('/serials/' + idSerial).then(function (response) {
-                self.showSerialEdit();
-                self.serialEdit = response.data
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        changeSerial: function(){
-            var self = this;
-			
-			api.put('/serials/' + self.serialEdit.id, self.serialEdit).then(function (response) {
-				console.log(response.data);
-                router.push('/post/' + self.post.id);
-                router.push('/');
-                self.hideSerialEdit();
-			}).catch(function (error) {
-				console.log(error);
-			});
-        },
-        removeSerial: function(idSerial){
-            var self = this;
-            
-            api.delete('/serials/' + idSerial).then(function (response) {
-                router.push('/');
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        clearSerials: function(){
-			var self = this;
-            self.serialNew = {
-                name: '',
-                total: 0,
-                serial: '',
-                notes: ''
-            };
-        },
-		createSerial: function() {
-			var self = this;
-            
-            var serial = {
-                article_id: self.post.id,
-                name: self.serialNew.name,
-                total: self.serialNew.total,
-                serial: self.serialNew.serial,
-                notes: self.serialNew.notes
-            };
-            
-			api.post('/serials',serial).then(function (response) {
-				serialId = response.data;
-				console.log(response.data);
-                
-                console.log(serialId);
-                
-                api.get('/serials/' + serialId).then(function (response) {
-                    //self.post.serials.push(response.data);
-                    self.post.serials.push(response.data);
-                    console.log('serials Cargadas');
-                    self.clearSerials();
-                    self.hideSerial();
-                }).catch(function (error) {
-                    console.log(error);
-                });
-			}).catch(function (error) {
-				console.log(error);
-			});
-		},
-		updatepost: function () {
-			var item = {
-				id: this.post.id,
-				category_id: this.selectedCategory,
-				location_id: this.selectedLocation,
-				area_id: this.selectedArea,
-				people_id: this.selectedPeople,
-				content: this.post.content,
-			};
-			
-			api.put('/articles/'+item.id,item).then(function (response) {
-				console.log(response.data);
-			}).catch(function (error) {
-				console.log(error);
-			});
-			router.push('/');
-		},
-        createComment: function(){
-			var self = this;
-            self.commentNew.article_id = self.post.id;
-			api.post('/comments', self.commentNew).then(function (response) {
-            
-                api.get('/comments/' + response.data).then(function (response) {
-                    self.post.comments.push(response.data);
-                    self.hideComment();
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            
-			}).catch(function (error) {
-				console.log(error);
-			});
-        },
-        hideSerial(){
-            jQuery("#serialNew-pop").css('display', 'none');
-        },
-        showSerial(){
-            jQuery("#serialNew-pop").css('display', 'block');
-        },
-        hideSerialEdit(){
-            jQuery("#serialEdit-pop").css('display', 'none');
-        },
-        showSerialEdit(){
-            jQuery("#serialEdit-pop").css('display', 'block');
-        },
-        hideComment(){
-            jQuery("#commentNew-pop").css('display', 'none');
-        },
-        showComment(){
-            jQuery("#commentNew-pop").css('display', 'block');
-        }
-	}
-});
-
-var postDelete = Vue.extend({
-  template: '#post-delete',
-  data: function () {
-    return {post: findpost(this.$route.params.post_id)};
-  },
-  methods: {
-    deletepost: function () {
-		var post = this.post;
-		api.delete('/articles/'+post.id).then(function (response) {
-			console.log(response.data);
-			router.push('/');
-		}).catch(function (error) {
-			console.log(error);
-		});  
-    }
-  }
-});
-
-var Addpost = Vue.extend({
-	template: '#add-post',
-	data: function () {
-		return {
-			optionsLocations: this.$parent.locations,
-			optionsAreas: this.$parent.areas,
-			optionsCategories: this.$parent.categories,
-			optionsPeople: [],
-			post: {
-				content: 'Cedula: \n'+
-						'Nombre: \n'+
-						'User: \n'+
-						'Cargo: \n'+
-						'Piloto: Monteverde/Nobotia/MultiGYM \n'+
-						'Estado: Activo/Inactivo/Licencia NR/Licencia Pat/Vacaciones \n'+
-						'Supervisor: Cedula/Nombre \n'+
-						'Rol: Conductor/Jardinero/Recepcionista \n'+
-						'Ejecutivo_de_experiencia: Jefe del Jefe \n'+
-						'Genero: MAS/FEM \n'+
-						'Cuadrilla: Numero de la cuadrilla (Si aplica) \n', 
-				category_id: 0,
-				area_id: 0,
-				location_id: 0,
-				people_id: 0,
-			}
-		}
-	},
-	methods: {
-		createpost: function() {
-			var post = this.post;
-			api.post('/articles',post).then(function (response) {
-				post.id = response.data;
-				console.log(post.id);
-				router.push('/')
-			}).catch(function (error) {
-				console.log(error);
-			});
-		}
-	},
-    created(){
-        var self = this;
-		if(self.$parent.locations == null || self.$parent.areas == null || self.$parent.categories == null){ 
-			router.push('/');
-		}else{
-			self.optionsLocations = self.$parent.locations;
-			self.optionsAreas = self.$parent.areas;
-			self.optionsCategories = self.$parent.categories;
-			
-			Forma2.get('/people.php?action=option_list').then(function (response) {
-				if(!response.data.data){
-				}
-				else{
-					self.optionsPeople = response.data.data;
-					console.log(self.optionsPeople);
-				}
-			}).catch(function (error) {
-				console.log(error);
-			});
-		}
-    },
-    mounted(){
-        var self = this;
-    }
-});
-
-var router = new VueRouter({routes:[
-  { path: '/', component: List},
-  { path: '/post/:post_id', component: post, name: 'post'},
-  { path: '/add-post', component: Addpost},
-  { path: '/post/:post_id/edit', component: postEdit, name: 'post-edit'},
-  { path: '/post/:post_id/delete', component: postDelete, name: 'post-delete'}
-]});
-app = new Vue({
-    el: "#app",
-    data: {
-        posts: null,
-        categories: null,
-        locations: null,
-        areas: null,
-        searchKey: ''
-    },
-	components: {
-        'List': List
-	},
-    router:router,
-    methods: {
-		loadBasicList: function(){
-			var self = this;
-			api.get('/categories').then(function (response) {
-				self.categories = response.data.records;
-				console.log('Categorias Cargadas');
-			}).catch(function (error) {
-				console.log(error);
-			});
-			
-			api.get('/locations').then(function (response) {
-				self.locations = response.data.records;
-				console.log('Sedes Cargadas');
-			}).catch(function (error) {
-				console.log(error);
-			});
-			api.get('/areas').then(function (response) {
-				self.areas = response.data.records;
-				console.log('Areas Cargadas');
-			}).catch(function (error) {
-				console.log(error);
-			});
-		} 
-    },
-    created() {
-        var self = this;
-    },
-    mounted() {
-        var self = this;
-		self.loadBasicList();
-    },
-    template: `
-    <main class="container_not">
-        <router-view></router-view>
-    </main>
-    `
-})
-</script>
-
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="dist/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="assets/js/bootbox.min.js"></script>
+    <script src="assets/js/notify.js"></script>
+    <script src="assets/js/jquery.mask.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

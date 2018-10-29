@@ -8,7 +8,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.2.1/vue-router.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.js"></script>
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <link href="dist/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <link href="dist/bootstrap/3.3.7/css/bootstrap-theme.css" rel="stylesheet" id="bootstrap-css">
 		<link href="assets/css/style.css" rel="stylesheet">
     </head>
 <body>
@@ -108,6 +109,33 @@
                                             </div>
                                         </div>
                                     </li>
+									
+									
+                                    <li id="dropdownPersonal-1" v-if="userSession.active == true">
+                                        <a data-toggle="collapse" href="#dropdownPersonal-1-lvl1">
+                                            <span class="glyphicon glyphicon-user"></span> Personal <span class="caret"></span>
+                                        </a>
+
+                                        <div id="dropdownPersonal-1-lvl1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <ul class="nav navbar-nav">                                                    
+                                                    <li>
+                                                        <router-link tag="a" v-bind:to="{path: '/people'}">
+                                                            <span class="glyphicon glyphicon-plus-sign"></span>
+                                                            Listar Personal
+                                                        </router-link>
+                                                    </li>
+                                                    <router-link tag="li" v-bind:to="{name: 'peopleAdd', params: {} }">
+                                                    <a >
+                                                        <span class="glyphicon glyphicon-plus-sign"></span>
+                                                        Nuevo Empleado
+                                                    </a>
+                                                    </router-link>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+									
                                     <li id="dropdown-2" v-if="userSession.active == true">
                                         <a data-toggle="collapse" href="#dropdown-2-lvl1">
                                             <span class="glyphicon glyphicon-user"></span> Opciones <span class="caret"></span>
@@ -116,33 +144,8 @@
                                         <div id="dropdown-2-lvl1" class="panel-collapse collapse">
                                             <div class="panel-body">
                                                 <ul class="nav navbar-nav">
-                                                    
                                                     <!--<li><a href="#">Categorias</a></li>-->
-
-                                                    <li class="panel panel-default" id="dropdown-2">
-                                                        <a data-toggle="collapse" href="#dropdown-2-lvl2">
-                                                            <span class="glyphicon glyphicon-off"></span> Categorias <span class="caret"></span>
-                                                        </a>
-                                                        <div id="dropdown-2-lvl2" class="panel-collapse collapse">
-                                                            <div class="panel-body">
-                                                                <ul class="nav navbar-nav">
-                                                                    <li v-for="cat in categories"><a href="#">{{ cat.name }}</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="panel panel-default" id="dropdown-3">
-                                                        <a data-toggle="collapse" href="#dropdown-3-lvl2">
-                                                            <span class="glyphicon glyphicon-off"></span> Localiciones <span class="caret"></span>
-                                                        </a>
-                                                        <div id="dropdown-3-lvl2" class="panel-collapse collapse">
-                                                            <div class="panel-body">
-                                                                <ul class="nav navbar-nav">
-                                                                    <li v-for="loc in locations"><a href="#">{{ loc.name }}</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </li>
+													
                                                     <li class="panel panel-default" id="dropdown-4">
                                                         <a data-toggle="collapse" href="#dropdown-4-lvl2">
                                                             <span class="glyphicon glyphicon-off"></span> Areas <span class="caret"></span>
@@ -150,12 +153,139 @@
                                                         <div id="dropdown-4-lvl2" class="panel-collapse collapse">
                                                             <div class="panel-body">
                                                                 <ul class="nav navbar-nav">
-                                                                    <li v-for="area in areas"><a href="#">{{ area.name }}</a></li>
+                                                                    <li v-for="area in areas">
+																		<a class="cursor-pointer"> 
+																			<i @click="areaDelete(area.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="areaUpdate(area.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			
+																			{{ area.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="areaCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
                                                                 </ul>
                                                             </div>
                                                         </div>
                                                     </li>
-              
+                                                    <li class="panel panel-default" id="dropdown-5">
+                                                        <a data-toggle="collapse" href="#dropdown-5-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Cargos <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-5-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="cargo in cargos">
+																		<a class="cursor-pointer"> 
+																			<i @click="appointmentDelete(cargo.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="appointmentUpdate(cargo.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			<i @click="appointmentPermissionZoom(cargo.permission_id, cargo.id)"  class="glyphicon glyphicon-cog"></i> 
+																			{{ cargo.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="appointmentCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="panel panel-default" id="dropdown-6">
+                                                        <a data-toggle="collapse" href="#dropdown-6-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Categorias (Inventario) <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-6-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="category in categories">
+																		<a class="cursor-pointer"> 
+																			<i @click="categoryInventaryDelete(category.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="categoryInventaryUpdate(category.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ category.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="categoryInventaryCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
+                                                    <li class="panel panel-default" id="dropdown-7">
+                                                        <a data-toggle="collapse" href="#dropdown-7-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Estados (Personal) <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-7-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="estado in estados">
+																		<a class="cursor-pointer"> 
+																			<i @click="statusPeopleDelete(estado.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="statusPeopleUpdate(estado.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ estado.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="statusPeopleCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
+                                                    <li class="panel panel-default" id="dropdown-8">
+                                                        <a data-toggle="collapse" href="#dropdown-8-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Locaciones <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-8-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="location in locations">
+																		<a class="cursor-pointer"> 
+																			<i @click="locationDelete(location.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="locationUpdate(location.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ location.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="locationCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
+                                                    <li class="panel panel-default" id="dropdown-9">
+                                                        <a data-toggle="collapse" href="#dropdown-9-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Pilotos <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-9-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="pilot in pilots">
+																		<a class="cursor-pointer"> 
+																			<i @click="pilotDelete(pilot.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="pilotUpdate(pilot.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ pilot.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="pilotCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
+                                                    <li class="panel panel-default" id="dropdown-10">
+                                                        <a data-toggle="collapse" href="#dropdown-10-lvl2">
+                                                            <span class="glyphicon glyphicon-off"></span> Roles <span class="caret"></span>
+                                                        </a>
+                                                        <div id="dropdown-10-lvl2" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <ul class="nav navbar-nav">
+                                                                    <li v-for="rol in rols">
+																		<a class="cursor-pointer"> 
+																			<i @click="rolDelete(rol.id)"  class="glyphicon glyphicon-remove"></i> 
+																			<i @click="rolUpdate(rol.id)"  class="glyphicon glyphicon-pencil"></i> 
+																			{{ rol.name }} 
+																		</a>
+																	</li>
+																	<li><a @click="rolCreate" class="cursor-pointer"> <i class="glyphicon glyphicon-plus"></i> Crear / Nuevo</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+													
                                                 </ul>
                                             </div>
                                         </div>
@@ -225,7 +355,10 @@
                 Bienvenido
             </div>
             <div class="panel-body">
-                
+				<p>
+					El inventario es una de las partes fundamentales del capital en una empresa, ya que de su correcta administración depende en gran parte el éxito y rentabilidad de la misma; 
+					por lo cual, diseñar estrategias para manejarlo y monitorearlo no es un tema menor.
+				</p>
             </div>
         </div>
     </template>
@@ -425,7 +558,7 @@
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
-                                <router-link class="btn btn-default" v-bind:to="'/'"><span class="glyphicon glyphicon-remove"></span> Cancel</router-link>
+                                <router-link class="btn btn-default" v-bind:to="'/articles'"><span class="glyphicon glyphicon-remove"></span> Cancel</router-link>
                             </div>
                         </form>
                     </div>
@@ -534,7 +667,7 @@
             <form v-on:submit="deletepost">
               <p>The action cannot be undone.</p>
               <button type="submit" class="btn btn-danger">Delete</button>
-              <router-link class="btn btn-default" v-bind:to="'/'">Cancel</router-link>
+              <router-link class="btn btn-default" v-bind:to="'/articles'">Cancel</router-link>
             </form>
           </div>
       </div>
@@ -547,7 +680,7 @@
                     <div class="col-sm-12">
                         <h4>Informacion basica: </h4>
                         <hr>
-                        <form ><!--v-on:submit="createpost"-->
+                        <form v-on:submit="createpost">
                             <div class="form-group">
                                 <label for="edit-content">¿Donde Esta?: </label>
                                 <select v-model="post.location_id" class="form-control" required="required">
@@ -577,7 +710,7 @@
                                 <textarea class="form-control" id="add-content" rows="10" v-model="post.content" required="required"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Crear</button>
-                            <router-link class="btn btn-default" v-bind:to="'/'">Cancelar</router-link>
+                            <router-link class="btn btn-default" v-bind:to="'/articles'">Cancelar</router-link>
                         </form>
                     </div>
                 </div>
@@ -585,8 +718,283 @@
       </div>
     </template>
 
+    <template id="people-list">
+      <div>
+          <div class="">
+            <div class="actions">
+            </div>
+            <table class="table table-responsive">
+              <thead>
+              <tr>
+                <th>ID</th>
+                <th>nick</th>
+                <th>nombre</th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-if="people===null">
+                <td colspan="4">Cargando...</td>
+              </tr>
+              <tr v-else v-for="person in people">
+                <td><router-link v-bind:to="{name: 'articlesView', params: {article_id: person.id}}"></router-link></td>
+                <td>{{ person.nick }}</td>
+                <td>{{ person.nombre }}</td>
+                <td>
+                    <router-link class="btn btn-default btn-xs" v-bind:to="{name: 'peopleEdit', params: {person_id: person.id}}">
+                        <span class="glyphicon glyphicon-pencil"></span> Modificar
+                    </router-link>
+                </td>
+                <td>
+                    <router-link class="btn btn-info btn-xs" v-bind:to="{name: 'peopleView', params: {person_id: person.id}}">
+                        <span class="glyphicon glyphicon-barcode"></span> Ver
+                    </router-link>
+                </td>
+                <td>
+                    <router-link class="btn btn-danger btn-xs" v-bind:to="{name: 'articlesDelete', params: {article_id: person.id}}">
+                        <span class="glyphicon glyphicon-trash"></span> Eliminar
+                    </router-link>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </template>
+
+    <template id="people-add">
+      <div>
+            <div class="">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Informacion basica: </h4>
+                        <hr>
+                        <form v-on:submit="createperson">
+                            <div class="form-group">
+                                <label for="edit-content">Cedula: </label>
+								<input class="form-control" type="text" value="" v-model="person.cedula" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Nombre: </label>
+								<input class="form-control" type="text" value="" v-model="person.nombre" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Nick: </label>
+								<input class="form-control" type="text" value="" v-model="person.nick" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Contraseña: </label>
+								<input class="form-control" type="text" value="" v-model="person.hash" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Cargo: </label>
+                                <select v-model="person.cargo_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.cargos" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Piloto: </label>
+                                <select v-model="person.pilot_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.pilots" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Estado: </label>
+                                <select v-model="person.estado_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.estados" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Fecha de Nacimiento: </label>
+								<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_nacimiento" required="required" placeholder="Año/Mes/Día" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Fecha de Ingreso: </label>
+								<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_ingreso" required="required" placeholder="Año/Mes/Día" value="2018-01-01" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Rol: </label>
+                                <select v-model="person.rol_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.rols" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Ubicacion: </label>
+                                <select v-model="person.location_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.locations" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+							
+                            <div class="form-group">
+                                <label for="add-content">Mas info: </label>
+                                <textarea class="form-control" id="add-content" rows="10" v-model="person.more"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Crear</button>
+                            <router-link class="btn btn-default" v-bind:to="'/articles'">Cancelar</router-link>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </template>
+	
+    <template id="people-edit">
+      <div>
+            <div class="">
+                <h2>Editar Personal</h2>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Informacion Básica: </h4>
+						
+                        <form v-on:submit="updateperson">
+                            <div class="form-group">
+                                <label for="edit-content">Cedula: </label>
+								<input class="form-control" type="text" value="" v-model="person.cedula" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Nombre: </label>
+								<input class="form-control" type="text" value="" v-model="person.nombre" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Nick: </label>
+								<input class="form-control" type="text" value="" v-model="person.nick" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Contraseña: </label>
+								<input class="form-control" type="text" value="" v-model="person.hash" required="required" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Cargo: </label>
+                                <select v-model="person.cargo_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.cargos" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Piloto: </label>
+                                <select v-model="person.pilot_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.pilots" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Estado: </label>
+                                <select v-model="person.estado_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.estados" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Fecha de Nacimiento: </label>
+								<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_nacimiento" required="required" placeholder="Año/Mes/Día" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Fecha de Ingreso: </label>
+								<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_ingreso" required="required" placeholder="Año/Mes/Día" value="2018-01-01" />
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Rol: </label>
+                                <select v-model="person.rol_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.rols" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content">Ubicacion: </label>
+                                <select v-model="person.location_id" class="form-control" required="required">
+                                    <option v-for="option in $parent.locations" v-bind:value="option.id">{{ option.name }}</option>
+                                </select>
+                            </div>
+							
+                            <div class="form-group">
+                                <label for="add-content">Mas info: </label>
+                                <textarea class="form-control" id="add-content" rows="10" v-model="person.more"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <router-link class="btn btn-default" v-bind:to="'/articles'">Cancelar</router-link>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </template>
+	
+    <template id="people-view">
+      <div>
+            <div class="">
+                <h2>Visor de Personal</h2>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Informacion Básica: </h4>
+						<div class="form-group">
+							<label for="edit-content">Cedula: </label>
+							<input class="form-control" type="text" value="" v-model="person.cedula" required="required" />
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Nombre: </label>
+							<input class="form-control" type="text" value="" v-model="person.nombre" required="required" />
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Nick: </label>
+							<input class="form-control" type="text" value="" v-model="person.nick" required="required" />
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Contraseña: </label>
+							<input class="form-control" type="text" value="" v-model="person.hash" required="required" />
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Cargo: </label>
+							<select v-model="person.cargo_id" class="form-control" required="required">
+								<option v-for="option in $parent.cargos" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Piloto: </label>
+							<select v-model="person.pilot_id" class="form-control" required="required">
+								<option v-for="option in $parent.pilots" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Estado: </label>
+							<select v-model="person.estado_id" class="form-control" required="required">
+								<option v-for="option in $parent.estados" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Fecha de Nacimiento: </label>
+							<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_nacimiento" required="required" placeholder="Año/Mes/Día" />
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Fecha de Ingreso: </label>
+							<input class="form-control mask-datesql" type="text" value="" v-model="person.fecha_ingreso" required="required" placeholder="Año/Mes/Día" value="2018-01-01" />
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Rol: </label>
+							<select v-model="person.rol_id" class="form-control" required="required">
+								<option v-for="option in $parent.rols" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-content">Ubicacion: </label>
+							<select v-model="person.location_id" class="form-control" required="required">
+								<option v-for="option in $parent.locations" v-bind:value="option.id">{{ option.name }}</option>
+							</select>
+						</div>
+						
+						<div class="form-group">
+							<label for="add-content">Mas info: </label>
+							<textarea class="form-control" id="add-content" rows="10" v-model="person.more"></textarea>
+						</div>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </template>
+
+
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="dist/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="assets/js/bootbox.min.js"></script>
+    <script src="assets/js/notify.js"></script>
+    <script src="assets/js/jquery.mask.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
 </html>
